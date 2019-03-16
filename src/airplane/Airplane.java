@@ -4,10 +4,10 @@ public class Airplane {
 	
 	private int firstClassCapacity;
 	private int coachClassCapacity;
+	private String id;
 	
 	
-	public Airplane(int firstClassCapacity, int coachClassCapacity) {
-		this.firstClassCapacity = firstClassCapacity;
-		this.coachClassCapacity = coachClassCapacity;
+	public Airplane(String id) {
+		this.id = id;
 	}
 }

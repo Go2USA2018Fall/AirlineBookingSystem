@@ -69,9 +69,11 @@ public class DaoFlight {
 		
 		Element arrival_time = (Element)arrival_element.getElementsByTagName("Time").item(0);
 		String arrival_value = getCharacterDataFromElement(arrival_time);
+		arrival_value = arrival_value.split("\\w+ \\w+ \\d+ ")[1];
 		
 		Element departure_time = (Element)departure_element.getElementsByTagName("Time").item(0);
 		String departure_value = getCharacterDataFromElement(departure_time);
+		departure_value = departure_value.split("\\w+ \\w+ \\d+ ")[1];
 		
 		Element seating = (Element)elementFlight.getElementsByTagName("Seating").item(0);
 		
@@ -88,11 +90,12 @@ public class DaoFlight {
 		ccPrice = ccPrice.replace("$", "");
 		double coachClassPrice = Double.parseDouble(ccPrice);
 		
-		Airplane airplane = new Airplane(firstClassCapacity, coachClassCapacity);
+		Airplane airplane = new Airplane(airplane_id);
 		
-		Flight flight = new Flight(departure, arrival, airplane, firstClassPrice, coachClassPrice);
+		Flight flight = new Flight(number, departure, arrival, airplane, firstClassPrice, coachClassPrice,
+				departure_value, arrival_value, coachClassCapacity, firstClassCapacity);
 		
-		System.out.println(airplane_id+" :: "+code_value1 +" => "+ code_value);
+		
 		return flight;
 		
 	}	

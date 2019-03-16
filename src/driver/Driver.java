@@ -12,6 +12,7 @@ import java.util.Collections;
 import airport.Airport;
 import airport.Airports;
 import dao.ServerInterface;
+import flight.Flights;
 
 /**
  * @author blake
@@ -60,7 +61,8 @@ public class Driver {
 		listAirports();
 		System.out.print("Please select a departure airport from the above list of airports: ");
 		String airport = reader.readLine();
-		ServerInterface.INSTANCE.getFlightsFrom(teamName, airport, date);
+		Flights flights = ServerInterface.INSTANCE.getFlightsFrom(teamName, airport, date);
+		flights.print();
 		// Try to get a list of airports
 		
 	}
