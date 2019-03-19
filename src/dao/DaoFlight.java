@@ -92,7 +92,7 @@ public class DaoFlight {
 		
 		Airplane airplane = new Airplane(airplane_id);
 		
-		Flight flight = new Flight(number, departure, arrival, airplane, firstClassPrice, coachClassPrice,
+		Flight flight = new Flight(number, flight_duration, departure, arrival, airplane, firstClassPrice, coachClassPrice,
 				departure_value, arrival_value, coachClassCapacity, firstClassCapacity);
 		
 		
