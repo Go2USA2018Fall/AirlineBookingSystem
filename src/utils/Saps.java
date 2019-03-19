@@ -20,4 +20,7 @@ public class Saps {
 	public static final double MAX_LONGITUDE = 180.0;
 	public static final double MIN_LONGITUDE = -180.0;
 	
+	public static final String TEAM_NAME = "noname";
+	public static final String DAY_FORMAT = "MM/dd/yyyy";
+	
 }
