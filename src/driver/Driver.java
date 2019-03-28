@@ -63,7 +63,6 @@ public class Driver {
 		System.out.println("Here is a list of flight leaving from "+airportCode);
 		ServerInterface.INSTANCE.getFlightsFrom(teamName, airportCode, departureDate).print();
 
-		
 	}
 
 	/**
