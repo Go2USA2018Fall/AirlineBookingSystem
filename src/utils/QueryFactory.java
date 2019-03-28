@@ -24,6 +24,10 @@ public class QueryFactory {
 	public static String getFlightsFrom(String teamName, String code, String date) {
 		return "?team=" + teamName + "&action=list&list_type=departing&airport="+code+"&day="+date;
 	}
+	
+	public static String getAirplanes(String teamName) {
+		return "?team=" + teamName + "&action=list&list_type=airplanes";
+	}
 	/**
 	 * Lock the server database so updates can be written
 	 * 

@@ -89,8 +89,8 @@ public class DaoFlight {
 		String ccPrice = coachClass.getAttributeNode("Price").getValue();
 		ccPrice = ccPrice.replace("$", "");
 		double coachClassPrice = Double.parseDouble(ccPrice);
-		
-		Airplane airplane = new Airplane(airplane_id);
+		//TODO: need to call airplane dao here to create airplane object
+		Airplane airplane = new Airplane();
 		
 		Flight flight = new Flight(number, flight_duration, departure, arrival, airplane, firstClassPrice, coachClassPrice,
 				departure_value, arrival_value, coachClassCapacity, firstClassCapacity);
