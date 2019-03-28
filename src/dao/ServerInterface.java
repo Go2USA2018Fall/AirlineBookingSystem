@@ -93,6 +93,14 @@ public enum ServerInterface {
 		
 	}
 	
+	/**
+	 * Return a collection of all the Flights from server
+	 * 
+	 * Retrieve the list of flights available to the specified teamName via HTTPGet of the server
+	 * 
+	 * @param teamName identifies the name of the team requesting the collection of flights
+	 * @return collection of Flights from server or null if error.
+	 */
 	public Flights getFlightsFrom (String teamName, String airport, String date) {
 
 		URL url;
@@ -144,6 +152,14 @@ public enum ServerInterface {
 		
 	}
 	
+	/**
+	 * Return a collection of all the Airplanes from server
+	 * 
+	 * Retrieve the list of Airplanes available to the specified teamName via HTTPGet of the server
+	 * 
+	 * @param teamName identifies the name of the team requesting the collection of Airplanes
+	 * @return collection of Airplanes from server or null if error.
+	 */
 	public Airplanes getAirplanes (String teamName) {
 
 		URL url;

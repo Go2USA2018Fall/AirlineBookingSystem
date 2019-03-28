@@ -16,7 +16,15 @@ public class Flight {
 	private double coachClassPrice;
 	private int firstClassCapacity;
 	private int coachClassCapacity;
-	
+	/**
+	 * Default constructor
+	 * 
+	 * Constructor with params. Requires object fields to be explicitly
+	 * set using setter methods
+	 * 
+	 * @pre None
+	 * @post member attributes are initialized to invalid default values
+	 */	
 	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, double firstClassPrice,
 			      double coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
 			      int firstClassCapacity) {

@@ -22,6 +22,25 @@ import flight.Flight;
 import flight.Flights;
 
 public class DaoFlight {
+	
+	/**
+	 * Builds a collection of Flights from flights described in XML
+	 * 
+	 * Parses an XML string to read each of the flights and adds each valid flight 
+	 * to the collection. The method uses Java DOM (Document Object Model) to convert
+	 * from XML to Java primitives. 
+	 * 
+	 * Method iterates over the set of Flight nodes in the XML string and builds
+	 * an Flight object from the XML node string and add the Flight object instance to
+	 * the Flights collection.
+	 * 
+	 * @param xmlFlights XML string containing set of Flights 
+	 * @return [possibly empty] collection of Flights in the xml string
+	 * @throws NullPointerException included to keep signature consistent with other addAll methods
+	 * 
+	 * @pre the xmlFlights string adheres to the format specified by the server API
+	 * @post the [possibly empty] set of Flights in the XML string are added to collection
+	 */
 
 	public static Flights addAll (String xmlFlights) throws NullPointerException {
 		Flights flights = new Flights();
@@ -43,6 +62,16 @@ public class DaoFlight {
 		return flights;
 	}
 	
+	/**
+	 * Creates an Flight object from a DOM node
+	 * 
+	 * Processes a DOM Node that describes an Airport and creates an Flight object from the information
+	 * @param nodeFlight is a DOM Node describing an Flight
+	 * @return Flight object created from the DOM Node representation of the Flight
+	 * 
+	 * @pre nodeFlight is of format specified by CS509 server API
+	 * @post flight object instantiated. Caller responsible for deallocating memory.
+	 */
 	static private Flight buildFlight (Node nodeFlight) {
 		String airplane_id;
 		String flight_duration;
@@ -100,6 +129,14 @@ public class DaoFlight {
 		
 	}	
 	
+	/**
+	 * Builds a DOM tree from an XML string
+	 * 
+	 * Parses the XML file and returns a DOM tree that can be processed
+	 * 
+	 * @param xmlString XML String containing set of objects
+	 * @return DOM tree from parsed XML or null if exception is caught
+	 */
 	static private Document buildDomDoc (String xmlString) {
 		/**
 		 * load the xml string into a DOM document and return the Document

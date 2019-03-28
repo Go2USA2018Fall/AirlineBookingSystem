@@ -15,8 +15,8 @@ import utils.Saps;
 import java.util.Scanner;
 
 /**
- * @author blake
- * @since 2016-02-24
+ * @author Yijie Yan
+ * @since 2019-03-15
  * @version 1.0
  *
  */
@@ -49,11 +49,38 @@ public class Driver {
 		Collections.sort(airports);
 		for (Airport airport : airports) {
 			System.out.println(airports.indexOf(airport) + " - " + airport.toString());
-
+		}
+		
+		if(tripType == 1 ){
+			oneWay( input,  airports, teamName);
+		}
+		else if (tripType == 2){
+			roundTrip( input,  airports, teamName);
+		}
+		else{
+			System.out.println("Invalid trip option. Please enter your option again!");
 		}
 
+
+
+	}
+	
+	/**
+	 * Handle the UI display when User choose one way trip option. 
+	 * It will handle User input and use it for searching trip
+	 * 
+	 * @param input
+	 * @param airports
+	 * @param teamName
+	 * 
+	 * @pre user choose one way as their trip option 
+	 * @post user input will be verified and invoke search function.
+	 */
+	public static void oneWay(Scanner input, Airports airports,String teamName){
 		System.out.println("Please input the number of the departure airport: ");
 		int departureAirportIndex = input.nextInt();
+		System.out.println("Please input the number of the arrival airport: ");
+		int arrival = input.nextInt();
 		String departureDate = null;
 		do {
 			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
@@ -62,10 +89,45 @@ public class Driver {
 		String airportCode = airports.get(departureAirportIndex).code();
 		System.out.println("Here is a list of flight leaving from "+airportCode);
 		ServerInterface.INSTANCE.getFlightsFrom(teamName, airportCode, departureDate).print();
-
+		//currently just display a list of flight. will be changed in the future iteration to complete search function. 
 	}
+	
+	/**
+	 * Handle the UI display when User choose round trip option. 
+	 * It will handle User input and use it for searching trip
+	 * 
+	 * @param input
+	 * @param airports
+	 * @param teamName
+	 * 
+	 * @pre user choose round trip as their trip option 
+	 * @post user input will be verified and invoke search function.
+	 */
+	public static void roundTrip(Scanner input, Airports airports,String teamName){
+		System.out.println("Please input the number of the departure airport: ");
+		int departureAirportIndex = input.nextInt();
+		System.out.println("Please input the number of the arrival airport: ");
+		int arrival = input.nextInt();
+		String departureDate = null;
+		String returndepartureDate = null;
+		do {
+			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
+			departureDate = input.next();
+		} while (!isValidDate(departureDate));
+		do {
+			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
+			returndepartureDate = input.next();
+		} while (!isValidDate(returndepartureDate));
+		String airportCode = airports.get(departureAirportIndex).code();
+		System.out.println("Here is a list of flight leaving from "+airportCode);
+		ServerInterface.INSTANCE.getFlightsFrom(teamName, airportCode, departureDate).print();
+		//currently just display a list of flight from departure airport. will be changed in the future iteration to complete search function. 
+	}
+	
 
 	/**
+	 * Validate the time format of user input. 
+	 * 
 	 * @param inDate
 	 * @return boolean
 	 */

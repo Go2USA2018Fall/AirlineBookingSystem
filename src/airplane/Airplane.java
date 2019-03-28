@@ -5,7 +5,15 @@ public class Airplane {
 	private int coachClassCapacity;
 	private String airplanemanufacture;
 	private String model;
-	
+	/**
+	 * Default constructor
+	 * 
+	 * Constructor without params. Requires object fields to be explicitly
+	 * set using setter methods
+	 * 
+	 * @pre None
+	 * @post member attributes are initialized to invalid default values
+	 */	
 	public Airplane () {
 		airplanemanufacture = "";
 		model = "";
