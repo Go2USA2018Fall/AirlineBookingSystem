@@ -3,6 +3,9 @@
  */
 package driver;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -14,6 +17,8 @@ import utils.Saps;
 
 import java.util.Scanner;
 
+import TripRequest.TripRequest;
+
 /**
  * @author Yijie Yan
  * @since 2019-03-15
@@ -21,6 +26,8 @@ import java.util.Scanner;
  *
  */
 public class Driver {
+	
+	private static String teamName = "NoName";
 
 	/**
 	 * Entry point for CS509 sample code driver
@@ -30,39 +37,20 @@ public class Driver {
 	 * 
 	 * @param args is the arguments passed to java vm in format of "CS509.sample
 	 *             teamName" where teamName is a valid team
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
-		Scanner input = new Scanner(System.in);
-
-		if (args.length != 1) {
-			System.err.println("usage: CS509.sample teamName");
-			System.exit(-1);
-			return;
-		}
-		System.out.println("Please choose type of trip(One-Way-1, Round-Trip -2):");
-		int tripType = input.nextInt();
-		System.out.println("Here are list of Airports you can select from: ");
-
-		String teamName = args[0];
-		// Try to get a list of airports
+	public static void main(String[] args) throws Exception {
+		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
 		Airports airports = ServerInterface.INSTANCE.getAirports(teamName);
 		Collections.sort(airports);
-		for (Airport airport : airports) {
-			System.out.println(airports.indexOf(airport) + " - " + airport.toString());
+		TripRequest tripRequest = parseInput(reader, airports);
+		while(tripRequest.isInvalid()) {
+			System.out.println("Error in input: " + tripRequest.invalidMessage());
+			tripRequest = parseInput(reader, airports);
 		}
 		
-		if(tripType == 1 ){
-			oneWay( input,  airports, teamName);
-		}
-		else if (tripType == 2){
-			roundTrip( input,  airports, teamName);
-		}
-		else{
-			System.out.println("Invalid trip option. Please enter your option again!");
-		}
-
-
-
+		
+		
 	}
 	
 	/**
@@ -72,24 +60,31 @@ public class Driver {
 	 * @param input
 	 * @param airports
 	 * @param teamName
-	 * 
+	 * @throws Exception 
 	 * @pre user choose one way as their trip option 
 	 * @post user input will be verified and invoke search function.
 	 */
-	public static void oneWay(Scanner input, Airports airports,String teamName){
+	public static TripRequest parseInput(BufferedReader reader, Airports airports) throws Exception {
+		System.out.println("Please choose type of trip(One-Way-1, Round-Trip -2):");
+		int tripType = Integer.parseInt(reader.readLine());
+		boolean oneWay = (tripType == 1);
+		System.out.println("Here are list of Airports you can select from: ");
+		airports.print();
 		System.out.println("Please input the number of the departure airport: ");
-		int departureAirportIndex = input.nextInt();
+		int departureAirportIndex = Integer.parseInt(reader.readLine());
 		System.out.println("Please input the number of the arrival airport: ");
-		int arrival = input.nextInt();
-		String departureDate = null;
-		do {
-			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
-			departureDate = input.next();
-		} while (!isValidDate(departureDate));
-		String airportCode = airports.get(departureAirportIndex).code();
-		System.out.println("Here is a list of flight leaving from "+airportCode);
-		ServerInterface.INSTANCE.getFlightsFrom(teamName, airportCode, departureDate).print();
-		//currently just display a list of flight. will be changed in the future iteration to complete search function. 
+		int arrivalAirportIndex = Integer.parseInt(reader.readLine());
+		System.out.println("Please input the Date of departure(yyyy_mm_dd);");
+		String departureDate = reader.readLine();
+		System.out.println("Please input the Date of arrival(yyyy_mm_dd);");
+		String arrivalDate = reader.readLine();
+		System.out.println("Please input seat type (Economy-1, First class-2)");
+		int seatType = Integer.parseInt(reader.readLine());
+		boolean economySeat = (seatType == 1);
+		Airport departure = airports.get(departureAirportIndex);
+		Airport arrival = airports.get(arrivalAirportIndex);
+		
+		return new TripRequest(departure, arrival, departureDate, arrivalDate, oneWay, economySeat);
 	}
 	
 	/**
