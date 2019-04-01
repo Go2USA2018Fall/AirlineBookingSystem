@@ -50,4 +50,9 @@ public class Flight {
 			+" :: First Class reserved:"+ firstClassCapacity+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassCapacity+" Coach Class Price: $"+ coachClassPrice;
 		System.out.println(print_str);
 	}
+	
+	public Airport arrivalAirport() {
+		return this.arrival;
+	}
 }
+

@@ -45,4 +45,30 @@ public class TripRequest {
 	public String invalidMessage() {
 		return this.invalidMessage;
 	}
+	
+	public Airport arrivalAirport() {
+		return this.arrival;
+	}
+	
+	public Airport departureAirport() {
+		return this.departure;
+	}
+	
+	public Date arrivalDate() {
+		return this.arrivalDate;
+	}
+	
+	public Date departureDate() {
+		return this.departureDate;
+	}
+	
+	public String arrivalDateString() {
+		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
+		return dateParser.format(this.arrivalDate);
+	}
+	
+	public String departureDateString() {
+		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
+		return dateParser.format(this.departureDate);
+	}
 }

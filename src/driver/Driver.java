@@ -13,6 +13,9 @@ import java.util.Collections;
 import airport.Airport;
 import airport.Airports;
 import dao.ServerInterface;
+import flight.Flights;
+import trip.Trips;
+import tripfinder.TripFinder;
 import utils.Saps;
 
 import java.util.Scanner;
@@ -41,7 +44,7 @@ public class Driver {
 	 */
 	public static void main(String[] args) throws Exception {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
-		Airports airports = ServerInterface.INSTANCE.getAirports(teamName);
+		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
 		TripRequest tripRequest = parseInput(reader, airports);
 		while(tripRequest.isInvalid()) {
@@ -49,6 +52,9 @@ public class Driver {
 			tripRequest = parseInput(reader, airports);
 		}
 		
+		TripFinder tripFinder = new TripFinder(tripRequest);
+		Trips trips = tripFinder.findTrips();
+		trips.print();
 		
 		
 	}
@@ -115,7 +121,7 @@ public class Driver {
 		} while (!isValidDate(returndepartureDate));
 		String airportCode = airports.get(departureAirportIndex).code();
 		System.out.println("Here is a list of flight leaving from "+airportCode);
-		ServerInterface.INSTANCE.getFlightsFrom(teamName, airportCode, departureDate).print();
+		ServerInterface.INSTANCE.getFlightsFrom(airportCode, departureDate).print();
 		//currently just display a list of flight from departure airport. will be changed in the future iteration to complete search function. 
 	}
 	
