@@ -46,7 +46,8 @@ public class Driver {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
-		TripRequest tripRequest = parseInput(reader, airports);
+		//TripRequest tripRequest = parseInput(reader, airports);
+		TripRequest tripRequest = testInput(reader, airports);
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
@@ -93,6 +94,13 @@ public class Driver {
 		return new TripRequest(departure, arrival, departureDate, arrivalDate, oneWay, economySeat);
 	}
 	
+	private static TripRequest testInput(BufferedReader reader, Airports airports) throws Exception {
+		airports.print();
+		Airport departure = airports.get(25);
+		Airport arrival = airports.get(27);
+		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", true, true);
+	}
+	
 	/**
 	 * Handle the UI display when User choose round trip option. 
 	 * It will handle User input and use it for searching trip
@@ -100,11 +108,12 @@ public class Driver {
 	 * @param input
 	 * @param airports
 	 * @param teamName
+	 * @throws Exception 
 	 * 
 	 * @pre user choose round trip as their trip option 
 	 * @post user input will be verified and invoke search function.
 	 */
-	public static void roundTrip(Scanner input, Airports airports,String teamName){
+	public static void roundTrip(Scanner input, Airports airports,String teamName) throws Exception{
 		System.out.println("Please input the number of the departure airport: ");
 		int departureAirportIndex = input.nextInt();
 		System.out.println("Please input the number of the arrival airport: ");

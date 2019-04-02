@@ -36,13 +36,12 @@ public class DaoFlight {
 	 * 
 	 * @param xmlFlights XML string containing set of Flights 
 	 * @return [possibly empty] collection of Flights in the xml string
-	 * @throws NullPointerException included to keep signature consistent with other addAll methods
-	 * 
+	 * @throws Exception 
 	 * @pre the xmlFlights string adheres to the format specified by the server API
 	 * @post the [possibly empty] set of Flights in the XML string are added to collection
 	 */
 
-	public static Flights addAll (String xmlFlights) throws NullPointerException {
+	public static Flights addAll (String xmlFlights) throws Exception {
 		Flights flights = new Flights();
 		
 		// Load the XML string into a DOM tree for ease of processing
@@ -68,11 +67,12 @@ public class DaoFlight {
 	 * Processes a DOM Node that describes an Airport and creates an Flight object from the information
 	 * @param nodeFlight is a DOM Node describing an Flight
 	 * @return Flight object created from the DOM Node representation of the Flight
+	 * @throws Exception 
 	 * 
 	 * @pre nodeFlight is of format specified by CS509 server API
 	 * @post flight object instantiated. Caller responsible for deallocating memory.
 	 */
-	static private Flight buildFlight (Node nodeFlight) {
+	static private Flight buildFlight (Node nodeFlight) throws Exception {
 		String airplane_id;
 		String flight_duration;
 		String number;
@@ -98,11 +98,11 @@ public class DaoFlight {
 		
 		Element arrival_time = (Element)arrival_element.getElementsByTagName("Time").item(0);
 		String arrival_value = getCharacterDataFromElement(arrival_time);
-		arrival_value = arrival_value.split("\\w+ \\w+ \\d+ ")[1];
+		//arrival_value = arrival_value.split("\\w+ \\w+ \\d+ ")[1];
 		
 		Element departure_time = (Element)departure_element.getElementsByTagName("Time").item(0);
 		String departure_value = getCharacterDataFromElement(departure_time);
-		departure_value = departure_value.split("\\w+ \\w+ \\d+ ")[1];
+		//departure_value = departure_value.split("\\w+ \\w+ \\d+ ")[1];
 		
 		Element seating = (Element)elementFlight.getElementsByTagName("Seating").item(0);
 		

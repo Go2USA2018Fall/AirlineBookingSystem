@@ -22,6 +22,7 @@ public class TripRequest {
 	public TripRequest(Airport departure, Airport arrival, String departureDate, String arrivalDate,
 				boolean oneWay, boolean economySeat) throws Exception {
 		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
+		dateParser.setTimeZone(TimeZone.getTimeZone("GMT"));
 		try {
 			this.departureDate = dateParser.parse(departureDate);
 			this.arrivalDate = dateParser.parse(arrivalDate);

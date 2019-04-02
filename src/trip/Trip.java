@@ -13,4 +13,8 @@ public class Trip {
 	public void print() {
 		this.flights.print();
 	}
+	
+	public Flights tripFlights() {
+		return this.flights;
+	}
 }

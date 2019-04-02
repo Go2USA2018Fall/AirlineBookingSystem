@@ -101,8 +101,9 @@ public enum ServerInterface {
 	 * 
 	 * @param teamName identifies the name of the team requesting the collection of flights
 	 * @return collection of Flights from server or null if error.
+	 * @throws Exception 
 	 */
-	public Flights getFlightsFrom (String airport, String date) {
+	public Flights getFlightsFrom (String airport, String date) throws Exception {
 
 		URL url;
 		HttpURLConnection connection;

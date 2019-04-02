@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import flight.Flights;
 
-public class Trips extends ArrayList<Flights> {
+public class Trips extends ArrayList<Trip> {
 	private static final long serialVersionUID = 1L;
 	
 	public void print() {
-		for (Flights trip: this) {
+		for (Trip trip: this) {
 			trip.print();
 		}
 	}
