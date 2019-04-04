@@ -2,11 +2,14 @@ package flight;
 
 import airport.Airport;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+//import java.text.DateFormat;
+//import java.text.ParseException;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
+//import java.util.TimeZone;
+import java.time.*;
+//import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatter;
 
 import airplane.Airplane;
 
@@ -19,10 +22,10 @@ public class Flight {
 	private Airplane aplane;
 	private String departureTime;
 	private String arrivalTime;
-	private Date departureDate;
-	private Date arrivalDate;
-	private double firstClassPrice;
-	private double coachClassPrice;
+	private ZonedDateTime departureDate;
+	private ZonedDateTime arrivalDate;
+	private float firstClassPrice;
+	private float coachClassPrice;
 	private int firstClassCapacity;
 	private int coachClassCapacity;
 	/**
@@ -35,17 +38,21 @@ public class Flight {
 	 * @pre None
 	 * @post member attributes are initialized to invalid default values
 	 */	
-	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, double firstClassPrice,
-			      double coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
+	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, float firstClassPrice,
+			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
 			      int firstClassCapacity) throws Exception {
+
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm z");
+		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
 		
-		DateFormat dateParser = new SimpleDateFormat("yyyy MMM dd HH:mm");
-		dateParser.setTimeZone(TimeZone.getTimeZone("GMT"));
-		SimpleDateFormat timeParser = new SimpleDateFormat("HH:mm");
-		timeParser.setTimeZone(TimeZone.getTimeZone("GMT"));
-		
-		this.departureDate = dateParser.parse(departureTime);
-		this.arrivalDate = dateParser.parse(arrivalTime);
+		LocalDateTime depTime = LocalDateTime.parse(departureTime, dateParser);
+		this.departureDate = depTime.atZone(ZoneId.of("UTC"));
+		LocalDateTime arrTime = LocalDateTime.parse(arrivalTime, dateParser);
+		this.arrivalDate = arrTime.atZone(ZoneId.of("UTC"));
+		LocalTime tmpDepTime = this.departureDate.toLocalTime();
+		LocalTime tmpArrTime = this.arrivalDate.toLocalTime();
+		this.departureTime = tmpDepTime.format(timeParser);
+		this.arrivalTime = tmpArrTime.format(timeParser);
 		this.departure = departure;
 		this.arrival = arrival;
 		this.aplane = aplane;
@@ -53,8 +60,6 @@ public class Flight {
 		this.coachClassPrice = coachClassPrice;
 		this.number = number;
 		this.flightDuration = flightDuration;
-		this.departureTime = timeParser.format(this.departureDate);
-		this.arrivalTime = timeParser.format(this.arrivalDate);
 		this.firstClassCapacity = firstClassCapacity;
 		this.coachClassCapacity = coachClassCapacity;
 	}
@@ -99,12 +104,20 @@ public class Flight {
 		return Integer.parseInt(this.flightDuration);
 	}
 	
-	public Date departureDate() {
+	public ZonedDateTime departureDate() {
 		return this.departureDate;
 	}
 	
-	public Date arrivalDate() {
+	public ZonedDateTime arrivalDate() {
 		return this.arrivalDate;
+	}
+	
+	public float getFirstClassPrice() {
+		return this.firstClassPrice;
+	}
+	
+	public float getCoachClassPrice() {
+		return this.coachClassPrice;
 	}
 }
 

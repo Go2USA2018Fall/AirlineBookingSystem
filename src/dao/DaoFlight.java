@@ -110,14 +110,14 @@ public class DaoFlight {
 		String fcPrice = firstClass.getAttributeNode("Price").getValue();
 		fcPrice = fcPrice.replace("$", "");
 		fcPrice = fcPrice.replace(",", "");
-		double firstClassPrice = Double.parseDouble(fcPrice);
+		float firstClassPrice = Float.parseFloat(fcPrice);
 		int firstClassCapacity = Integer.parseInt(getCharacterDataFromElement(firstClass));
 		
 		Element coachClass = (Element)seating.getElementsByTagName("Coach").item(0);
 		int coachClassCapacity = Integer.parseInt(getCharacterDataFromElement(coachClass));
 		String ccPrice = coachClass.getAttributeNode("Price").getValue();
 		ccPrice = ccPrice.replace("$", "");
-		double coachClassPrice = Double.parseDouble(ccPrice);
+		float coachClassPrice = Float.parseFloat(ccPrice);
 		//TODO: need to call airplane dao here to create airplane object
 		Airplane airplane = new Airplane();
 		

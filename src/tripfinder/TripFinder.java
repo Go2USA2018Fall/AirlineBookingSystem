@@ -16,10 +16,12 @@ import utils.Validator;
 public class TripFinder {
 	
 	private TripRequest tripRequest;
+	private String seatClass;
 	private Map<String, Flights> flightCache = new HashMap<String, Flights>();
 
 	public TripFinder(TripRequest tripRequest) {
 		this.tripRequest = tripRequest;
+		this.seatClass = tripRequest.getSeatClass();
 	}
 	
 	public Trips findTrips() throws Exception {
@@ -30,6 +32,7 @@ public class TripFinder {
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips = Validator.validateTrips(trips, tripRequest);
 		System.out.println("Initial No. of Trips = "+ trips.size());
+		trips.calculatePrice();
 		return trips;
 	}
 	
@@ -49,7 +52,7 @@ public class TripFinder {
 				if (tmpFlight.arrivalAirport().compareTo(arrival) == 0) {
 					Flights newFlights = new Flights(flights);
 					newFlights.add(tmpFlight);
-					trips.add(new Trip(newFlights));
+					trips.add(new Trip(newFlights, this.seatClass));
 				} else {
 					Flights newFlights = new Flights(flights);
 					newFlights.add(tmpFlight);

@@ -23,6 +23,10 @@ public class Flights extends ArrayList<Flight>{
 	}
 	
 	public void print() {
+		System.out.println(toString());
+	}
+	
+	public String toString() {
 		String flightString = "";
 		int size = this.size();
 		for (int i = 0; i < size; i++) {
@@ -33,6 +37,6 @@ public class Flights extends ArrayList<Flight>{
 				flightString += flight.toString(false) + " |||| ";
 		}
 		
-		System.out.println(flightString);
+		return flightString;
 	}
 }

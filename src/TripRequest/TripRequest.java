@@ -1,10 +1,8 @@
 package TripRequest;
 
 import airport.Airport;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 
 
@@ -14,18 +12,20 @@ public class TripRequest {
 	private Airport departure;
 	private boolean oneWay;
 	private boolean economySeat;
-	private Date departureDate;
-	private Date arrivalDate;
+	private LocalDate departureDate;
+	private LocalDate arrivalDate;
 	private boolean isInvalid = true;
 	private String invalidMessage = "No Error";
 	
 	public TripRequest(Airport departure, Airport arrival, String departureDate, String arrivalDate,
 				boolean oneWay, boolean economySeat) throws Exception {
-		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
-		dateParser.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
+		LocalDate depTime = LocalDate.parse(departureDate, dateParser);
+		LocalDate arrTime = LocalDate.parse(arrivalDate, dateParser);
 		try {
-			this.departureDate = dateParser.parse(departureDate);
-			this.arrivalDate = dateParser.parse(arrivalDate);
+			this.departureDate = depTime;
+			this.arrivalDate = arrTime;
 			this.isInvalid = false;
 		} catch(Exception e) {
 			this.isInvalid = true;
@@ -55,21 +55,25 @@ public class TripRequest {
 		return this.departure;
 	}
 	
-	public Date arrivalDate() {
+	public LocalDate arrivalDate() {
 		return this.arrivalDate;
 	}
 	
-	public Date departureDate() {
+	public LocalDate departureDate() {
 		return this.departureDate;
 	}
 	
 	public String arrivalDateString() {
-		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 		return dateParser.format(this.arrivalDate);
 	}
 	
 	public String departureDateString() {
-		DateFormat dateParser = new SimpleDateFormat("yyyy_mm_dd");
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 		return dateParser.format(this.departureDate);
+	}
+	
+	public String getSeatClass() {
+		return this.economySeat ? "economy" : "firstclass";
 	}
 }

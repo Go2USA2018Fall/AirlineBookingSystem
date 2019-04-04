@@ -98,7 +98,7 @@ public class Driver {
 		airports.print();
 		Airport departure = airports.get(25);
 		Airport arrival = airports.get(27);
-		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", true, true);
+		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", true, false);
 	}
 	
 	/**

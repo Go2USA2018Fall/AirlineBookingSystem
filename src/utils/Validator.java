@@ -39,11 +39,11 @@ public class Validator {
 		return valid;
 	}
 	
-	private static boolean validateFlightDates(Flight arrivalFlight, TripRequest tripRequest) {
-		
-		boolean valid =  arrivalFlight.arrivalDate().before(tripRequest.arrivalDate());
-		return valid;
-	}
+//	private static boolean validateFlightDates(Flight arrivalFlight, TripRequest tripRequest) {
+//		
+//		boolean valid =  arrivalFlight.arrivalDate().before(tripRequest.arrivalDate());
+//		return valid;
+//	}
 
 	private static boolean validateConnectingFlights(Flight first, Flight second) throws Exception {
 		boolean valid = true;
