@@ -24,11 +24,11 @@ public class TripFinder {
 		this.seatClass = tripRequest.getSeatClass();
 	}
 	
-	public Trips findTrips() throws Exception {
+	public Trips findFirstLegTrips() throws Exception {
 		int stopOver = 0;
 		Trips trips = new Trips();
 		Flights flights = new Flights();
-		findTrip(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver);
+		findTrip(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver, false);
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips = Validator.validateTrips(trips, tripRequest);
 		System.out.println("Initial No. of Trips = "+ trips.size());
@@ -36,16 +36,35 @@ public class TripFinder {
 		return trips;
 	}
 	
-	private void findTrip(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver) throws Exception {
+	public Trips findSecondLegTrips() throws Exception {
+		int stopOver = 0;
+		Trips trips = new Trips();
+		Flights flights = new Flights();
+		findTrip(tripRequest.arrivalAirport(), tripRequest.departureAirport(), trips, flights, stopOver, true);
+		System.out.println("Initial No. of Trips = "+ trips.size());
+		trips = Validator.validateTrips(trips, tripRequest);
+		System.out.println("Initial No. of Trips = "+ trips.size());
+		trips.calculatePrice();
+		return trips;
+	}
+	
+	private void findTrip(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
 		if (stopOver > 2) {
 			return;
 		} else {
 			Flights tmpFlights;
-			String flightKey = departure.code()+tripRequest.departureDateString();
+			String flightKey;
+			if (!returnTrip)
+				flightKey = departure.code()+tripRequest.departureDateString();
+			else
+				flightKey = departure.code()+tripRequest.returnDepartureDateString();
 			if (flightCache.containsKey(flightKey))
 				tmpFlights = flightCache.get(flightKey);
 			else {
-				tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString());
+				if (!returnTrip)
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString());
+				else
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString());
 				flightCache.put(flightKey, tmpFlights);
 			}
 			for (Flight tmpFlight: tmpFlights) {
@@ -56,7 +75,7 @@ public class TripFinder {
 				} else {
 					Flights newFlights = new Flights(flights);
 					newFlights.add(tmpFlight);
-					findTrip(tmpFlight.arrivalAirport(), arrival, trips, newFlights, stopOver+1);
+					findTrip(tmpFlight.arrivalAirport(), arrival, trips, newFlights, stopOver+1, returnTrip);
 				}
 			}
 		}

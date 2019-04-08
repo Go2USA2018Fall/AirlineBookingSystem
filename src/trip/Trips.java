@@ -15,7 +15,8 @@ public class Trips extends ArrayList<Trip> {
 	
 	public void print() {
 		for (Trip trip: this) {
-			trip.print();
+			String index = String.valueOf(this.indexOf(trip));
+			System.out.println(index + ") " + trip.toString());
 		}
 	}
 	

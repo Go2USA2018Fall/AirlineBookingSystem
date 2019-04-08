@@ -6,7 +6,6 @@ import flight.Flights;
 public class Trip {
 
 	private Flights oneWayFlights;
-	private Flights roundTripFlights;
 	private String seatClass;
 	private float price = 0;
 	

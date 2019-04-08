@@ -54,9 +54,18 @@ public class Driver {
 		}
 		
 		TripFinder tripFinder = new TripFinder(tripRequest);
-		Trips trips = tripFinder.findTrips();
-		trips.print();
-		
+		Trips firstLegTrips = tripFinder.findFirstLegTrips();
+		firstLegTrips.print();
+		System.out.print("Please select a trip by index: ");
+		int firstLegIndex = Integer.parseInt(reader.readLine());
+		System.out.println(firstLegTrips.get(firstLegIndex));
+		if (tripRequest.isRoundTrip()) {
+			Trips secondLegTrips = tripFinder.findSecondLegTrips();
+			secondLegTrips.print();
+			System.out.print("Please select the second leg trip by index: ");
+			int secondLegIndex = Integer.parseInt(reader.readLine());
+			System.out.println(secondLegTrips.get(secondLegIndex));
+		}
 		
 	}
 	
@@ -72,6 +81,7 @@ public class Driver {
 	 * @post user input will be verified and invoke search function.
 	 */
 	public static TripRequest parseInput(BufferedReader reader, Airports airports) throws Exception {
+		String departureDate, arrivalDate, returnDepartureDate, returnArrivalDate;
 		System.out.println("Please choose type of trip(One-Way-1, Round-Trip -2):");
 		int tripType = Integer.parseInt(reader.readLine());
 		boolean oneWay = (tripType == 1);
@@ -81,24 +91,37 @@ public class Driver {
 		int departureAirportIndex = Integer.parseInt(reader.readLine());
 		System.out.println("Please input the number of the arrival airport: ");
 		int arrivalAirportIndex = Integer.parseInt(reader.readLine());
-		System.out.println("Please input the Date of departure(yyyy_mm_dd);");
-		String departureDate = reader.readLine();
-		System.out.println("Please input the Date of arrival(yyyy_mm_dd);");
-		String arrivalDate = reader.readLine();
+		if (oneWay) {
+			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
+			departureDate = reader.readLine();
+			System.out.println("Please input the Date of arrival(yyyy_mm_dd);");
+			arrivalDate = reader.readLine();
+			returnDepartureDate = "";
+			returnArrivalDate = "";
+		} else {
+			System.out.println("Please input the departure date your first leg (yyyy_mm_dd);");
+			departureDate = reader.readLine();
+			System.out.println("Please input the arrival date of your first leg(yyyy_mm_dd);");
+			arrivalDate = reader.readLine();
+			System.out.println("Please input the departure date your second leg (yyyy_mm_dd);");
+			returnDepartureDate = reader.readLine();
+			System.out.println("Please input the arrival date of your second leg(yyyy_mm_dd);");
+			returnArrivalDate = reader.readLine();
+		}
 		System.out.println("Please input seat type (Economy-1, First class-2)");
 		int seatType = Integer.parseInt(reader.readLine());
 		boolean economySeat = (seatType == 1);
 		Airport departure = airports.get(departureAirportIndex);
 		Airport arrival = airports.get(arrivalAirportIndex);
 		
-		return new TripRequest(departure, arrival, departureDate, arrivalDate, oneWay, economySeat);
+		return new TripRequest(departure, arrival, departureDate, arrivalDate, returnDepartureDate, returnArrivalDate, oneWay, economySeat);
 	}
 	
 	private static TripRequest testInput(BufferedReader reader, Airports airports) throws Exception {
 		airports.print();
 		Airport departure = airports.get(25);
 		Airport arrival = airports.get(27);
-		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", true, false);
+		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", "2019_05_17", "2019_05_18", false, false);
 	}
 	
 	/**

@@ -14,18 +14,24 @@ public class TripRequest {
 	private boolean economySeat;
 	private LocalDate departureDate;
 	private LocalDate arrivalDate;
+	private LocalDate returnDepartureDate;
+	private LocalDate returnArrivalDate;
 	private boolean isInvalid = true;
 	private String invalidMessage = "No Error";
 	
 	public TripRequest(Airport departure, Airport arrival, String departureDate, String arrivalDate,
-				boolean oneWay, boolean economySeat) throws Exception {
+			String returnDepartureDate, String returnArrivalDate, boolean oneWay, boolean economySeat) throws Exception {
 		
 		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 		LocalDate depTime = LocalDate.parse(departureDate, dateParser);
 		LocalDate arrTime = LocalDate.parse(arrivalDate, dateParser);
+		LocalDate retDepTime = LocalDate.parse(returnDepartureDate, dateParser);
+		LocalDate retArrTime = LocalDate.parse(returnArrivalDate, dateParser);
 		try {
 			this.departureDate = depTime;
 			this.arrivalDate = arrTime;
+			this.returnDepartureDate = retDepTime;
+			this.returnArrivalDate = retArrTime;
 			this.isInvalid = false;
 		} catch(Exception e) {
 			this.isInvalid = true;
@@ -73,7 +79,21 @@ public class TripRequest {
 		return dateParser.format(this.departureDate);
 	}
 	
+	public String returnDepartureDateString() {
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
+		return dateParser.format(this.returnDepartureDate);
+	}
+	
+	public String returnArrivalDate() {
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
+		return dateParser.format(this.returnArrivalDate);
+	}
+	
 	public String getSeatClass() {
 		return this.economySeat ? "economy" : "firstclass";
+	}
+	
+	public boolean isRoundTrip() {
+		return !this.oneWay;
 	}
 }
