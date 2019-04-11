@@ -1,6 +1,16 @@
 package flight;
 
 import airport.Airport;
+
+//import java.text.DateFormat;
+//import java.text.ParseException;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
+//import java.util.TimeZone;
+import java.time.*;
+//import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatter;
+
 import airplane.Airplane;
 
 public class Flight {
@@ -12,8 +22,10 @@ public class Flight {
 	private Airplane aplane;
 	private String departureTime;
 	private String arrivalTime;
-	private double firstClassPrice;
-	private double coachClassPrice;
+	private ZonedDateTime departureDate;
+	private ZonedDateTime arrivalDate;
+	private float firstClassPrice;
+	private float coachClassPrice;
 	private int firstClassCapacity;
 	private int coachClassCapacity;
 	/**
@@ -21,13 +33,26 @@ public class Flight {
 	 * 
 	 * Constructor with params. Requires object fields to be explicitly
 	 * set using setter methods
+	 * @throws Exception 
 	 * 
 	 * @pre None
 	 * @post member attributes are initialized to invalid default values
 	 */	
-	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, double firstClassPrice,
-			      double coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
-			      int firstClassCapacity) {
+	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, float firstClassPrice,
+			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
+			      int firstClassCapacity) throws Exception {
+
+		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm z");
+		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
+		
+		LocalDateTime depTime = LocalDateTime.parse(departureTime, dateParser);
+		this.departureDate = depTime.atZone(ZoneId.of("UTC"));
+		LocalDateTime arrTime = LocalDateTime.parse(arrivalTime, dateParser);
+		this.arrivalDate = arrTime.atZone(ZoneId.of("UTC"));
+		LocalTime tmpDepTime = this.departureDate.toLocalTime();
+		LocalTime tmpArrTime = this.arrivalDate.toLocalTime();
+		this.departureTime = tmpDepTime.format(timeParser);
+		this.arrivalTime = tmpArrTime.format(timeParser);
 		this.departure = departure;
 		this.arrival = arrival;
 		this.aplane = aplane;
@@ -35,8 +60,6 @@ public class Flight {
 		this.coachClassPrice = coachClassPrice;
 		this.number = number;
 		this.flightDuration = flightDuration;
-		this.departureTime = departureTime;
-		this.arrivalTime = arrivalTime;
 		this.firstClassCapacity = firstClassCapacity;
 		this.coachClassCapacity = coachClassCapacity;
 	}
@@ -45,9 +68,56 @@ public class Flight {
 		return true;
 	}
 	
-	public void print() {
-		String print_str = number+" :: "+departure.code() +" "+"flight duration"+" :: "+flightDuration +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime
+	public String toString(boolean debug) {
+		String printStr;
+		if (debug) {
+			printStr = number+" :: "+departure.code() +" "+"flight duration"+" :: "+flightDuration +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime
 			+" :: First Class reserved:"+ firstClassCapacity+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassCapacity+" Coach Class Price: $"+ coachClassPrice;
-		System.out.println(print_str);
+		} else {
+			printStr = number+" :: "+departure.code() +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime;
+		}
+		
+		return printStr;
+	}
+	
+	public void print() {
+		System.out.println(toString(false));
+	}
+
+	public void printV() {
+		System.out.println(toString(true));
+	}
+	
+	public Airport arrivalAirport() {
+		return this.arrival;
+	}
+	
+	public String arrivalTime() {
+		return this.arrivalTime;
+	}
+	
+	public String departureTime() {
+		return this.departureTime;
+	}
+	
+	public int flightDuration() {
+		return Integer.parseInt(this.flightDuration);
+	}
+	
+	public ZonedDateTime departureDate() {
+		return this.departureDate;
+	}
+	
+	public ZonedDateTime arrivalDate() {
+		return this.arrivalDate;
+	}
+	
+	public float getFirstClassPrice() {
+		return this.firstClassPrice;
+	}
+	
+	public float getCoachClassPrice() {
+		return this.coachClassPrice;
 	}
 }
+

@@ -33,6 +33,7 @@ public enum ServerInterface {
 	 * mUrlBase is the Universal Resource Locator (web address) of the CS509 reservation server
 	 */
 	private final String mUrlBase = "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";
+	private final String teamName = "NoName";
 
 	/**
 	 * Return a collection of all the airports from server
@@ -42,7 +43,7 @@ public enum ServerInterface {
 	 * @param teamName identifies the name of the team requesting the collection of airports
 	 * @return collection of Airports from server or null if error.
 	 */
-	public Airports getAirports (String teamName) {
+	public Airports getAirports () {
 
 		URL url;
 		HttpURLConnection connection;
@@ -100,8 +101,9 @@ public enum ServerInterface {
 	 * 
 	 * @param teamName identifies the name of the team requesting the collection of flights
 	 * @return collection of Flights from server or null if error.
+	 * @throws Exception 
 	 */
-	public Flights getFlightsFrom (String teamName, String airport, String date) {
+	public Flights getFlightsFrom (String airport, String date) throws Exception {
 
 		URL url;
 		HttpURLConnection connection;
@@ -160,7 +162,7 @@ public enum ServerInterface {
 	 * @param teamName identifies the name of the team requesting the collection of Airplanes
 	 * @return collection of Airplanes from server or null if error.
 	 */
-	public Airplanes getAirplanes (String teamName) {
+	public Airplanes getAirplanes () {
 
 		URL url;
 		HttpURLConnection connection;
@@ -219,7 +221,7 @@ public enum ServerInterface {
 	 * @param teamName is the name of team requesting server lock
 	 * @return true if the server was locked successfully, else false
 	 */
-	public boolean lock (String teamName) {
+	public boolean lock () {
 		URL url;
 		HttpURLConnection connection;
 
@@ -271,7 +273,7 @@ public enum ServerInterface {
 	 * @param teamName is the name of the team holding the lock
 	 * @return true if the server was successfully unlocked.
 	 */
-	public boolean unlock (String teamName) {
+	public boolean unlock () {
 		URL url;
 		HttpURLConnection connection;
 		

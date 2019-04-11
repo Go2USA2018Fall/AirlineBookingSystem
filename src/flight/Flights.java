@@ -14,9 +14,29 @@ import airport.Airport;
 public class Flights extends ArrayList<Flight>{
 	private static final long serialVersionUID = 1L;
 	
+	public Flights(Flights f) {
+		super(f);
+	}
+	
+	public Flights() {
+		super();
+	}
+	
 	public void print() {
-		for (Flight f: this) {
-			f.print();
+		System.out.println(toString());
+	}
+	
+	public String toString() {
+		String flightString = "";
+		int size = this.size();
+		for (int i = 0; i < size; i++) {
+			Flight flight = this.get(i);
+			if (i == size-1)
+				flightString += flight.toString(false);
+			else 
+				flightString += flight.toString(false) + " |||| ";
 		}
+		
+		return flightString;
 	}
 }
