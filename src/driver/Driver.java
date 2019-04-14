@@ -46,7 +46,7 @@ public class Driver {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
-		//TripRequest tripRequest = parseInput(reader, airports);
+
 		TripRequest tripRequest = testInput(reader, airports);
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
@@ -94,19 +94,46 @@ public class Driver {
 		if (oneWay) {
 			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
 			departureDate = reader.readLine();
+			System.out.println("Please input the earlist time for departure time: (HH:mm)");
+			String earliestDepartTimefirst = reader.readLine();
+			System.out.println("Please input the latest time for departure time: (HH:mm)");
+			String latestDepartTimefirst = reader.readLine();
 			System.out.println("Please input the Date of arrival(yyyy_mm_dd);");
 			arrivalDate = reader.readLine();
+			System.out.println("Please input the first time for Arrival time: (HH:mm)");
+			String earliestArrivalTimefirst =  reader.readLine();
+			System.out.println("Please input the latest time for Arrival time: (HH:mm)");
+			String latestArrivalTimefirst = reader.readLine();
 			returnDepartureDate = "";
 			returnArrivalDate = "";
 		} else {
 			System.out.println("Please input the departure date your first leg (yyyy_mm_dd);");
 			departureDate = reader.readLine();
+			System.out.println("Please input the earlist time for departure time: (HH:mm)");
+			String earliestDepartTimefirst = reader.readLine();
+			System.out.println("Please input the latest time for departure time: (HH:mm)");
+			String latestDepartTimefirst = reader.readLine();
 			System.out.println("Please input the arrival date of your first leg(yyyy_mm_dd);");
 			arrivalDate = reader.readLine();
+			System.out.println("Please input the first time for Arrival time: (HH:mm)");
+			String earliestArrivalTimefirst =  reader.readLine();
+			System.out.println("Please input the latest time for Arrival time: (HH:mm)");
+			String latestArrivalTimefirst = reader.readLine();
+			
+			System.out.println("Now please input the return trip information");
 			System.out.println("Please input the departure date your second leg (yyyy_mm_dd);");
 			returnDepartureDate = reader.readLine();
+			System.out.println("Please input the earlist time for departure time: (HH:mm)");
+			String earliestDepartTimesecond = reader.readLine();
+			System.out.println("Please input the latest time for departure time: (HH:mm)");
+			String latestDepartTimesecond = reader.readLine();
 			System.out.println("Please input the arrival date of your second leg(yyyy_mm_dd);");
 			returnArrivalDate = reader.readLine();
+			System.out.println("Please input the first time for Arrival time: (HH:mm)");
+			String earliestArrivalTimesecond =  reader.readLine();
+			System.out.println("Please input the latest time for Arrival time: (HH:mm)");
+			String latestArrivalTimesecond = reader.readLine();
+			
 		}
 		System.out.println("Please input seat type (Economy-1, First class-2)");
 		int seatType = Integer.parseInt(reader.readLine());
@@ -136,27 +163,39 @@ public class Driver {
 	 * @pre user choose round trip as their trip option 
 	 * @post user input will be verified and invoke search function.
 	 */
-	public static void roundTrip(Scanner input, Airports airports,String teamName) throws Exception{
+	public static void oneWay(Scanner input, Airports airports,String teamName) throws Exception{
 		System.out.println("Please input the number of the departure airport: ");
 		int departureAirportIndex = input.nextInt();
 		System.out.println("Please input the number of the arrival airport: ");
 		int arrival = input.nextInt();
+		
 		String departureDate = null;
-		String returndepartureDate = null;
+		String arrivalDate = null;
 		do {
 			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
 			departureDate = input.next();
 		} while (!isValidDate(departureDate));
+		
+		System.out.println("Please input the earlist time for departure time: (HH:mm)");
+		String earliestDepartTime = input.next();
+		System.out.println("Please input the latest time for departure time: (HH:mm)");
+		String latestDepartTime = input.next();
+
 		do {
-			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
-			returndepartureDate = input.next();
-		} while (!isValidDate(returndepartureDate));
+			System.out.println("Please input the Date of arrival(yyyy_mm_dd);");
+			arrivalDate = input.next();
+		} while (!isValidDate(arrivalDate));
+		System.out.println("Please input the earlist time for Arrival time: (HH:mm)");
+		String earliestArrivalTime = input.next();
+		System.out.println("Please input the latest time for Arrival time: (HH:mm)");
+		String latestArrivalTime = input.next();
+		
+		System.out.println("Please input the Date of arrival(yyyy_mm_dd)");
 		String airportCode = airports.get(departureAirportIndex).code();
 		System.out.println("Here is a list of flight leaving from "+airportCode);
 		ServerInterface.INSTANCE.getFlightsFrom(airportCode, departureDate).print();
 		//currently just display a list of flight from departure airport. will be changed in the future iteration to complete search function. 
 	}
-	
 
 	/**
 	 * Validate the time format of user input. 
