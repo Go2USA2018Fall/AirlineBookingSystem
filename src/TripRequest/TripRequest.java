@@ -90,7 +90,7 @@ public class TripRequest {
 	}
 	
 	public String getSeatClass() {
-		return this.economySeat ? "economy" : "firstclass";
+		return this.economySeat ? "coach" : "firstclass";
 	}
 	
 	public boolean isRoundTrip() {

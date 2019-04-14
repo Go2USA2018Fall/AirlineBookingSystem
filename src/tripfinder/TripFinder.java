@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import TripRequest.TripRequest;
+import airplane.Airplane;
+import airplane.Airplanes;
 import airport.Airport;
 import dao.ServerInterface;
 import flight.Flight;
@@ -18,10 +20,15 @@ public class TripFinder {
 	private TripRequest tripRequest;
 	private String seatClass;
 	private Map<String, Flights> flightCache = new HashMap<String, Flights>();
-
+	private Map<String, Airplane> airplaneData = new HashMap<String, Airplane>();
+	
 	public TripFinder(TripRequest tripRequest) {
 		this.tripRequest = tripRequest;
 		this.seatClass = tripRequest.getSeatClass();
+		Airplanes airplanes = ServerInterface.INSTANCE.getAirplanes();
+		for (Airplane airplane: airplanes) {
+			airplaneData.put(airplane.getModel(), airplane);
+		}
 	}
 	
 	public Trips findFirstLegTrips() throws Exception {
@@ -62,9 +69,9 @@ public class TripFinder {
 				tmpFlights = flightCache.get(flightKey);
 			else {
 				if (!returnTrip)
-					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString());
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString(), this.airplaneData);
 				else
-					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString());
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString(), this.airplaneData);
 				flightCache.put(flightKey, tmpFlights);
 			}
 			for (Flight tmpFlight: tmpFlights) {

@@ -1,5 +1,8 @@
 package trip;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
 import flight.Flight;
 import flight.Flights;
 
@@ -33,5 +36,28 @@ public class Trip {
 	
 	public Flights tripFlights() {
 		return this.oneWayFlights;
+	}
+	
+	public ZonedDateTime getDepartureDateTime() {
+		return this.oneWayFlights.get(0).departureDate();
+	}
+	
+	public ZonedDateTime getArrivalDateTime() {
+		int size = this.oneWayFlights.size();
+		return this.oneWayFlights.get(size-1).arrivalDate();
+	}
+	
+	public long duration() {
+		ZonedDateTime departure = this.getDepartureDateTime();
+		ZonedDateTime arrival = this.getArrivalDateTime();
+		return ChronoUnit.HOURS.between(departure,  arrival);
+	}
+	
+	public float getPrice() {
+		return this.price;
+	}
+	
+	public boolean confirm() {
+		return true;
 	}
 }

@@ -34,7 +34,16 @@ public class Validator {
 			else
 				valid = valid && validateConnectingFlights(tripFlights.get(i), tripFlights.get(i+1));
 		}
-		
+		String seatClass = tripRequest.getSeatClass();
+		for (Flight flight: tripFlights) {
+			if (seatClass.equals("coach")) {
+				valid = valid && flight.isCoachClassAvailable();
+			} else if(seatClass.equals("firstclass")) {
+				valid = valid && flight.isFirstClassAvailable();
+			}
+			
+			if (!valid) break;
+		}
 		//valid = valid && validateFlightDates(tripFlights.get(size-1), tripRequest);
 		return valid;
 	}

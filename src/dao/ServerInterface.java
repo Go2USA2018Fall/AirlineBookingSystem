@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
+import airplane.Airplane;
 import airplane.Airplanes;
 import airport.Airports;
 import flight.Flights;
@@ -103,7 +105,7 @@ public enum ServerInterface {
 	 * @return collection of Flights from server or null if error.
 	 * @throws Exception 
 	 */
-	public Flights getFlightsFrom (String airport, String date) throws Exception {
+	public Flights getFlightsFrom (String airport, String date, Map<String, Airplane> airplaneData) throws Exception {
 
 		URL url;
 		HttpURLConnection connection;
@@ -149,7 +151,7 @@ public enum ServerInterface {
 		}
 
 		xmlFlights = result.toString();
-		flights = DaoFlight.addAll(xmlFlights);
+		flights = DaoFlight.addAll(xmlFlights, airplaneData);
 		return flights;
 		
 	}

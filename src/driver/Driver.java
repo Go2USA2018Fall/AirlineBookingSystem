@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Collections;
 
 import airport.Airport;
@@ -16,6 +17,10 @@ import dao.ServerInterface;
 import flight.Flights;
 import trip.Trips;
 import tripfinder.TripFinder;
+import utils.ArrivalComparator;
+import utils.DepartureComparator;
+import utils.DurationComparator;
+import utils.PriceComparator;
 import utils.Saps;
 
 import java.util.Scanner;
@@ -55,18 +60,51 @@ public class Driver {
 		
 		TripFinder tripFinder = new TripFinder(tripRequest);
 		Trips firstLegTrips = tripFinder.findFirstLegTrips();
+		Collections.sort(firstLegTrips, new DepartureComparator());
 		firstLegTrips.print();
-		System.out.print("Please select a trip by index: ");
-		int firstLegIndex = Integer.parseInt(reader.readLine());
-		System.out.println(firstLegTrips.get(firstLegIndex));
-		if (tripRequest.isRoundTrip()) {
-			Trips secondLegTrips = tripFinder.findSecondLegTrips();
-			secondLegTrips.print();
-			System.out.print("Please select the second leg trip by index: ");
-			int secondLegIndex = Integer.parseInt(reader.readLine());
-			System.out.println(secondLegTrips.get(secondLegIndex));
-		}
+		Trips secondLegTrips = null;
+		boolean loopValid = true;
+		boolean firstLeg = true;
 		
+		while(loopValid) {
+			System.out.println("Commands: select <trip index>, sort <price, departure, arrival, duration>");
+			System.out.print("console> ");
+			String input = reader.readLine();
+			if (input.startsWith("select") && firstLeg) {
+				int firstLegIndex = Integer.parseInt(input.split(" ")[1]); 
+				System.out.println(firstLegTrips.get(firstLegIndex));
+				if (tripRequest.isRoundTrip()) {
+					firstLeg = false;
+					secondLegTrips = tripFinder.findSecondLegTrips();
+					Collections.sort(secondLegTrips, new DepartureComparator());
+					secondLegTrips.print();
+					System.out.println("SECOND LEG TRIPS");
+				}
+			}
+			
+			else if (input.startsWith("select") && !firstLeg) {
+				int secondLegIndex = Integer.parseInt(input.split(" ")[1]);
+				System.out.println(secondLegTrips.get(secondLegIndex));
+			}
+			
+			else if (input.startsWith("sort")) {
+				Trips toSort = firstLeg ? firstLegTrips : secondLegTrips;
+				String sortBy = input.split(" ")[1];
+				if (sortBy.equals("price")) {
+					Collections.sort(toSort, new PriceComparator());
+					toSort.print();
+				} else if(sortBy.equals("departure")) {
+					Collections.sort(toSort, new DepartureComparator());
+					toSort.print();
+				} else if (sortBy.equals("arrival")) {
+					Collections.sort(toSort, new ArrivalComparator());
+					toSort.print();
+				} else if (sortBy.equals("duration")) {
+					Collections.sort(toSort, new DurationComparator());
+					toSort.print();
+				}
+			}
+		}		
 	}
 	
 	/**
@@ -153,7 +191,7 @@ public class Driver {
 		} while (!isValidDate(returndepartureDate));
 		String airportCode = airports.get(departureAirportIndex).code();
 		System.out.println("Here is a list of flight leaving from "+airportCode);
-		ServerInterface.INSTANCE.getFlightsFrom(airportCode, departureDate).print();
+		//ServerInterface.INSTANCE.getFlightsFrom(airportCode, departureDate).print();
 		//currently just display a list of flight from departure airport. will be changed in the future iteration to complete search function. 
 	}
 	

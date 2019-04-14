@@ -42,11 +42,23 @@ public class Airplane {
 		this.coachClassCapacity=coachClassCapacity;
 	}
 	
+	public int getCoachClassCapacity() {
+		return this.coachClassCapacity;
+	}
+	
+	public int getFirstClassCapacity() {
+		return this.firstClassCapacity;
+	}
+	
 	public void airplanemanufacture (String airplanemanufacture) {
 		this.airplanemanufacture=airplanemanufacture;
 	}
 	
 	public void model (String model) {
 		this.model=model;
+	}
+	
+	public String getModel() {
+		return this.model;
 	}
 }

@@ -2,6 +2,7 @@ package dao;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +42,7 @@ public class DaoFlight {
 	 * @post the [possibly empty] set of Flights in the XML string are added to collection
 	 */
 
-	public static Flights addAll (String xmlFlights) throws Exception {
+	public static Flights addAll (String xmlFlights, Map<String, Airplane> airplaneData) throws Exception {
 		Flights flights = new Flights();
 		
 		// Load the XML string into a DOM tree for ease of processing
@@ -51,7 +52,7 @@ public class DaoFlight {
 		
 		for (int i = 0; i < nodesFlights.getLength(); i++) {
 			Element elementFlight = (Element) nodesFlights.item(i);
-			Flight flight = buildFlight (elementFlight);
+			Flight flight = buildFlight (elementFlight, airplaneData);
 			
 			if (flight.isValid()) {
 				flights.add(flight);
@@ -72,7 +73,7 @@ public class DaoFlight {
 	 * @pre nodeFlight is of format specified by CS509 server API
 	 * @post flight object instantiated. Caller responsible for deallocating memory.
 	 */
-	static private Flight buildFlight (Node nodeFlight) throws Exception {
+	static private Flight buildFlight (Node nodeFlight, Map<String, Airplane> airplaneData) throws Exception {
 		String airplane_id;
 		String flight_duration;
 		String number;
@@ -80,6 +81,7 @@ public class DaoFlight {
 		// The airport element has attributes of Name and 3 character airport code
 		Element elementFlight = (Element) nodeFlight;
 		airplane_id = elementFlight.getAttributeNode("Airplane").getValue();
+		Airplane airplane = airplaneData.get(airplane_id);
 		flight_duration = elementFlight.getAttributeNode("FlightTime").getValue();
 		number = elementFlight.getAttributeNode("Number").getValue();
 		
@@ -119,7 +121,6 @@ public class DaoFlight {
 		ccPrice = ccPrice.replace("$", "");
 		float coachClassPrice = Float.parseFloat(ccPrice);
 		//TODO: need to call airplane dao here to create airplane object
-		Airplane airplane = new Airplane();
 		
 		Flight flight = new Flight(number, flight_duration, departure, arrival, airplane, firstClassPrice, coachClassPrice,
 				departure_value, arrival_value, coachClassCapacity, firstClassCapacity);

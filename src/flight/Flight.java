@@ -26,8 +26,8 @@ public class Flight {
 	private ZonedDateTime arrivalDate;
 	private float firstClassPrice;
 	private float coachClassPrice;
-	private int firstClassCapacity;
-	private int coachClassCapacity;
+	private int firstClassReserved;
+	private int coachClassReserved;
 	/**
 	 * Default constructor
 	 * 
@@ -39,8 +39,8 @@ public class Flight {
 	 * @post member attributes are initialized to invalid default values
 	 */	
 	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, float firstClassPrice,
-			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
-			      int firstClassCapacity) throws Exception {
+			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassReserved,
+			      int firstClassReserved) throws Exception {
 
 		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm z");
 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
@@ -60,8 +60,8 @@ public class Flight {
 		this.coachClassPrice = coachClassPrice;
 		this.number = number;
 		this.flightDuration = flightDuration;
-		this.firstClassCapacity = firstClassCapacity;
-		this.coachClassCapacity = coachClassCapacity;
+		this.firstClassReserved = firstClassReserved;
+		this.coachClassReserved = coachClassReserved;
 	}
 	
 	public boolean isValid() {
@@ -72,7 +72,7 @@ public class Flight {
 		String printStr;
 		if (debug) {
 			printStr = number+" :: "+departure.code() +" "+"flight duration"+" :: "+flightDuration +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime
-			+" :: First Class reserved:"+ firstClassCapacity+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassCapacity+" Coach Class Price: $"+ coachClassPrice;
+			+" :: First Class reserved:"+ firstClassReserved+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassReserved+" Coach Class Price: $"+ coachClassPrice;
 		} else {
 			printStr = number+" :: "+departure.code() +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime;
 		}
@@ -107,7 +107,7 @@ public class Flight {
 	public ZonedDateTime departureDate() {
 		return this.departureDate;
 	}
-	
+		
 	public ZonedDateTime arrivalDate() {
 		return this.arrivalDate;
 	}
@@ -118,6 +118,14 @@ public class Flight {
 	
 	public float getCoachClassPrice() {
 		return this.coachClassPrice;
+	}
+	
+	public boolean isFirstClassAvailable() {
+		return this.firstClassReserved < this.aplane.getFirstClassCapacity();
+	}
+	
+	public boolean isCoachClassAvailable() {
+		return this.coachClassReserved < this.aplane.getCoachClassCapacity();
 	}
 }
 
