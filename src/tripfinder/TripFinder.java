@@ -1,6 +1,7 @@
 package tripfinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ public class TripFinder {
 	
 	private TripRequest tripRequest;
 	private String seatClass;
-	private Map<String, Flights> flightCache = new HashMap<String, Flights>();
+	private Map<String, Flights> flightCacheByDeparture = new HashMap<String, Flights>();
+	private Map<String, Flights> flightCacheByArrival = new HashMap<String, Flights>();
 	private Map<String, Airplane> airplaneData = new HashMap<String, Airplane>();
 	
 	public TripFinder(TripRequest tripRequest) {
@@ -35,7 +37,11 @@ public class TripFinder {
 		int stopOver = 0;
 		Trips trips = new Trips();
 		Flights flights = new Flights();
-		findTrip(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver, false);
+		if (this.tripRequest.searchByDeparture())
+			findTripByDeparture(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver, false);
+		else {
+			findTripByArrival(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver, false);
+		}
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips = Validator.validateTrips(trips, tripRequest);
 		System.out.println("Initial No. of Trips = "+ trips.size());
@@ -47,7 +53,11 @@ public class TripFinder {
 		int stopOver = 0;
 		Trips trips = new Trips();
 		Flights flights = new Flights();
-		findTrip(tripRequest.arrivalAirport(), tripRequest.departureAirport(), trips, flights, stopOver, true);
+		if (this.tripRequest.searchByDeparture())
+			findTripByDeparture(tripRequest.arrivalAirport(), tripRequest.departureAirport(), trips, flights, stopOver, true);
+		else {
+			findTripByArrival(tripRequest.arrivalAirport(), tripRequest.departureAirport(), trips, flights, stopOver, true);
+		}
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips = Validator.validateTrips(trips, tripRequest);
 		System.out.println("Initial No. of Trips = "+ trips.size());
@@ -55,7 +65,7 @@ public class TripFinder {
 		return trips;
 	}
 	
-	private void findTrip(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
+	private void findTripByDeparture(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
 		if (stopOver > 2) {
 			return;
 		} else {
@@ -65,14 +75,14 @@ public class TripFinder {
 				flightKey = departure.code()+tripRequest.departureDateString();
 			else
 				flightKey = departure.code()+tripRequest.returnDepartureDateString();
-			if (flightCache.containsKey(flightKey))
-				tmpFlights = flightCache.get(flightKey);
+			if (flightCacheByDeparture.containsKey(flightKey))
+				tmpFlights = flightCacheByDeparture.get(flightKey);
 			else {
 				if (!returnTrip)
 					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString(), this.airplaneData);
 				else
 					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString(), this.airplaneData);
-				flightCache.put(flightKey, tmpFlights);
+				flightCacheByDeparture.put(flightKey, tmpFlights);
 			}
 			for (Flight tmpFlight: tmpFlights) {
 				if (tmpFlight.arrivalAirport().compareTo(arrival) == 0) {
@@ -82,10 +92,43 @@ public class TripFinder {
 				} else {
 					Flights newFlights = new Flights(flights);
 					newFlights.add(tmpFlight);
-					findTrip(tmpFlight.arrivalAirport(), arrival, trips, newFlights, stopOver+1, returnTrip);
+					findTripByDeparture(tmpFlight.arrivalAirport(), arrival, trips, newFlights, stopOver+1, returnTrip);
 				}
 			}
 		}
 	}
 	
+	private void findTripByArrival(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
+		if (stopOver > 2) {
+			return;
+		} else {
+			Flights tmpFlights;
+			String flightKey;
+			if (!returnTrip)
+				flightKey = arrival.code()+tripRequest.arrivalDateString();
+			else
+				flightKey = arrival.code()+tripRequest.returnArrivalDateString();
+			if (flightCacheByArrival.containsKey(flightKey))
+				tmpFlights = flightCacheByArrival.get(flightKey);
+			else {
+				if (!returnTrip)
+					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.arrivalDateString(), this.airplaneData);
+				else
+					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.returnArrivalDateString(), this.airplaneData);
+				flightCacheByArrival.put(flightKey, tmpFlights);
+			}
+			for (Flight tmpFlight: tmpFlights) {
+				if (tmpFlight.departureAirport().compareTo(departure) == 0) {
+					Flights newFlights = new Flights(flights);
+					newFlights.add(tmpFlight);
+					Collections.reverse(newFlights);
+					trips.add(new Trip(newFlights, this.seatClass));
+				} else {
+					Flights newFlights = new Flights(flights);
+					newFlights.add(tmpFlight);
+					findTripByArrival(departure, tmpFlight.departureAirport(), trips, newFlights, stopOver+1, returnTrip);
+				}
+			}
+		}
+	}
 }

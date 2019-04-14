@@ -92,6 +92,10 @@ public class Flight {
 		return this.arrival;
 	}
 	
+	public Airport departureAirport() {
+		return this.departure;
+	}
+	
 	public String arrivalTime() {
 		return this.arrivalTime;
 	}

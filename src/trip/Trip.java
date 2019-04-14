@@ -19,7 +19,7 @@ public class Trip {
 	
 	public void calculatePrice() {
 		for (Flight flight: this.oneWayFlights) {
-			if (this.seatClass == "economy")
+			if (this.seatClass == "coach")
 				this.price += flight.getCoachClassPrice();
 			else if(this.seatClass == "firstclass")
 				this.price += flight.getFirstClassPrice();

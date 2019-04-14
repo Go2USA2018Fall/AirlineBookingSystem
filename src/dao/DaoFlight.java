@@ -119,6 +119,7 @@ public class DaoFlight {
 		int coachClassCapacity = Integer.parseInt(getCharacterDataFromElement(coachClass));
 		String ccPrice = coachClass.getAttributeNode("Price").getValue();
 		ccPrice = ccPrice.replace("$", "");
+		ccPrice = ccPrice.replace(",", "");
 		float coachClassPrice = Float.parseFloat(ccPrice);
 		//TODO: need to call airplane dao here to create airplane object
 		
