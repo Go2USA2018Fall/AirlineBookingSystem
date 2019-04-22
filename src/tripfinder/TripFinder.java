@@ -43,7 +43,7 @@ public class TripFinder {
 			findTripByArrival(tripRequest.departureAirport(), tripRequest.arrivalAirport(), trips, flights, stopOver, false);
 		}
 		System.out.println("Initial No. of Trips = "+ trips.size());
-		trips = Validator.validateTrips(trips, tripRequest);
+		trips = Validator.validateTrips(trips, tripRequest, false);
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips.calculatePrice();
 		return trips;
@@ -59,7 +59,7 @@ public class TripFinder {
 			findTripByArrival(tripRequest.arrivalAirport(), tripRequest.departureAirport(), trips, flights, stopOver, true);
 		}
 		System.out.println("Initial No. of Trips = "+ trips.size());
-		trips = Validator.validateTrips(trips, tripRequest);
+		trips = Validator.validateTrips(trips, tripRequest, true);
 		System.out.println("Initial No. of Trips = "+ trips.size());
 		trips.calculatePrice();
 		return trips;

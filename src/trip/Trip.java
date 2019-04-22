@@ -31,7 +31,7 @@ public class Trip {
 	}
 	
 	public String toString() {
-		return this.oneWayFlights.toString() + " Price: $" + String.valueOf(this.price);
+		return this.oneWayFlights.toString() + " Price: $" + String.valueOf(this.price) + " Duration: "+String.valueOf(this.duration()) +" hrs";
 	}
 	
 	public Flights tripFlights() {
@@ -47,10 +47,18 @@ public class Trip {
 		return this.oneWayFlights.get(size-1).arrivalDate();
 	}
 	
-	public long duration() {
+	public double duration() {
 		ZonedDateTime departure = this.getDepartureDateTime();
 		ZonedDateTime arrival = this.getArrivalDateTime();
-		return ChronoUnit.HOURS.between(departure,  arrival);
+		long flightDuration = ChronoUnit.MINUTES.between(departure,  arrival);
+		if (flightDuration < 0) {
+			flightDuration *= -1.0;
+			//return flightDuration;
+			return Math.round(flightDuration/60.0 *100.0)/100.0;
+		}
+		
+		//return flightDuration;
+		return Math.round(flightDuration/60.0 * 100.0)/100.0;
 	}
 	
 	public float getPrice() {

@@ -32,9 +32,9 @@ public class Flights extends ArrayList<Flight>{
 		for (int i = 0; i < size; i++) {
 			Flight flight = this.get(i);
 			if (i == size-1)
-				flightString += flight.toString(false);
+				flightString += flight.toString(true);
 			else 
-				flightString += flight.toString(false) + " |||| ";
+				flightString += flight.toString(true) + " |||| ";
 		}
 		
 		return flightString;

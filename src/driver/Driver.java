@@ -141,11 +141,23 @@ public class Driver {
 			if (searchByDeparture) {
 				System.out.println("Please input the departure date (yyyy_mm_dd);");
 				departureDate = reader.readLine();
+				System.out.println("Please input the earlist time for departure: (HH:mm)");
+				String earliestDepartTime = reader.readLine();
+				System.out.println("Please input the latest time for departure: (HH:mm)");
+				String latestDepartTime = reader.readLine();
+				
 				tripRequest.departureDate(departureDate);
+				tripRequest.timeFrame(earliestDepartTime, latestDepartTime);
 			} else {
 				System.out.println("Please input the arrival date(yyyy_mm_dd);");
 				arrivalDate = reader.readLine();
+				System.out.println("Please input the earlist time for arrival: (HH:mm)");
+				String earliestArrivalTime = reader.readLine();
+				System.out.println("Please input the latest time for arrival: (HH:mm)");
+				String latestArrivalTime = reader.readLine();
+				
 				tripRequest.arrivalDate(arrivalDate);
+				tripRequest.timeFrame(earliestArrivalTime, latestArrivalTime);
 			}
 			returnDepartureDate = "";
 			returnArrivalDate = "";
@@ -153,17 +165,37 @@ public class Driver {
 			if (searchByDeparture) {
 				System.out.println("Please input the departure date of your first leg (yyyy_mm_dd);");
 				departureDate = reader.readLine();
+				System.out.println("Please input the earlist time for departure for your first leg: (HH:mm)");
+				String earliestDepartTimeFirst = reader.readLine();
+				System.out.println("Please input the latest time for departure for your first leg: (HH:mm)");
+				String latestDepartTimeFirst = reader.readLine();
 				System.out.println("Please input the departure date of your second leg (yyyy_mm_dd);");
 				returnDepartureDate = reader.readLine();
+				System.out.println("Please input the earlist time for departure for your second leg: (HH:mm)");
+				String earliestDepartTimeSecond = reader.readLine();
+				System.out.println("Please input the latest time for departure for your second leg: (HH:mm)");
+				String latestDepartTimeSecond = reader.readLine();
+				
 				tripRequest.departureDate(departureDate);
 				tripRequest.returnDepartureDate(returnDepartureDate);
+				tripRequest.timeFrame(earliestDepartTimeFirst, latestDepartTimeFirst, earliestDepartTimeSecond, latestDepartTimeSecond);
 			} else {
 				System.out.println("Please input the arrival date of your first leg(yyyy_mm_dd);");
 				arrivalDate = reader.readLine();
+				System.out.println("Please input the earlist time for arrival for your first leg: (HH:mm)");
+				String earliestArrivalTimeFirst = reader.readLine();
+				System.out.println("Please input the latest time for arrival for your first leg: (HH:mm)");
+				String latestArrivalTimeFirst = reader.readLine();
 				System.out.println("Please input the arrival date of your second leg(yyyy_mm_dd);");
 				returnArrivalDate = reader.readLine();
+				System.out.println("Please input the earlist time for arrival for your second leg: (HH:mm)");
+				String earliestArrivalTimeSecond = reader.readLine();
+				System.out.println("Please input the latest time for arrival for your second leg: (HH:mm)");
+				String latestArrivalTimeSecond = reader.readLine();
+				
 				tripRequest.arrivalDate(returnArrivalDate);
 				tripRequest.returnArrivalDate(returnArrivalDate);
+				tripRequest.timeFrame(earliestArrivalTimeFirst, latestArrivalTimeFirst, earliestArrivalTimeSecond, latestArrivalTimeSecond);
 			}
 		}
 		System.out.println("Please input seat type (Economy-1, First class-2)");
@@ -181,7 +213,8 @@ public class Driver {
 		airports.print();
 		Airport departure = airports.get(25);
 		Airport arrival = airports.get(27);
-		return new TripRequest(departure, arrival, "2019_05_16", "2019_05_17", "2019_05_17", "2019_05_18", false, false, false);
+		return new TripRequest(departure, arrival, "2019_05_18", "2019_05_17", "2019_06_04", "2019_05_18", false, false, true,
+				"00:01", "23:00", "00:01", "23:59");
 	}
 	
 	/**

@@ -16,7 +16,7 @@ import airplane.Airplane;
 public class Flight {
 	
 	private String number;
-	private String flightDuration;
+	private double flightDuration;
 	private Airport departure;
 	private Airport arrival;
 	private Airplane aplane;
@@ -59,20 +59,22 @@ public class Flight {
 		this.firstClassPrice = firstClassPrice;
 		this.coachClassPrice = coachClassPrice;
 		this.number = number;
-		this.flightDuration = flightDuration;
+		this.flightDuration = Math.round((Long.parseLong(flightDuration)/60.0) * 100.0) / 100.0;
 		this.firstClassReserved = firstClassReserved;
 		this.coachClassReserved = coachClassReserved;
 	}
 	
 	public boolean isValid() {
 		return true;
+		
 	}
 	
 	public String toString(boolean debug) {
+		
 		String printStr;
 		if (debug) {
-			printStr = number+" :: "+departure.code() +" "+"flight duration"+" :: "+flightDuration +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime
-			+" :: First Class reserved:"+ firstClassReserved+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassReserved+" Coach Class Price: $"+ coachClassPrice;
+			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+this.departureDate.toLocalDate().toString()
+					+" : " + departureTime+" ===> "+arrival.code()+" "+this.arrivalDate().toLocalDate().toString() + " : " +arrivalTime;
 		} else {
 			printStr = number+" :: "+departure.code() +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime;
 		}
@@ -104,9 +106,9 @@ public class Flight {
 		return this.departureTime;
 	}
 	
-	public int flightDuration() {
-		return Integer.parseInt(this.flightDuration);
-	}
+	//public int flightDuration() {
+	//	return Integer.parseInt(this.flightDuration);
+	//}
 	
 	public ZonedDateTime departureDate() {
 		return this.departureDate;
