@@ -28,6 +28,10 @@ public class QueryFactory {
 	public static String getAirplanes(String teamName) {
 		return "?team=" + teamName + "&action=list&list_type=airplanes";
 	}
+	
+	public static String getFlightsTo(String teamName, String code, String date) {
+		return "?team=" + teamName + "&action=list&list_type=arriving&airport="+code+"&day="+date;
+	}
 	/**
 	 * Lock the server database so updates can be written
 	 * 

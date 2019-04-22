@@ -16,7 +16,7 @@ import airplane.Airplane;
 public class Flight {
 	
 	private String number;
-	private String flightDuration;
+	private double flightDuration;
 	private Airport departure;
 	private Airport arrival;
 	private Airplane aplane;
@@ -26,8 +26,8 @@ public class Flight {
 	private ZonedDateTime arrivalDate;
 	private float firstClassPrice;
 	private float coachClassPrice;
-	private int firstClassCapacity;
-	private int coachClassCapacity;
+	private int firstClassReserved;
+	private int coachClassReserved;
 	/**
 	 * Default constructor
 	 * 
@@ -39,8 +39,8 @@ public class Flight {
 	 * @post member attributes are initialized to invalid default values
 	 */	
 	public Flight(String number, String flightDuration, Airport departure, Airport arrival, Airplane aplane, float firstClassPrice,
-			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassCapacity,
-			      int firstClassCapacity) throws Exception {
+			      float coachClassPrice, String departureTime, String arrivalTime, int coachClassReserved,
+			      int firstClassReserved) throws Exception {
 
 		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm z");
 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
@@ -59,20 +59,22 @@ public class Flight {
 		this.firstClassPrice = firstClassPrice;
 		this.coachClassPrice = coachClassPrice;
 		this.number = number;
-		this.flightDuration = flightDuration;
-		this.firstClassCapacity = firstClassCapacity;
-		this.coachClassCapacity = coachClassCapacity;
+		this.flightDuration = Math.round((Long.parseLong(flightDuration)/60.0) * 100.0) / 100.0;
+		this.firstClassReserved = firstClassReserved;
+		this.coachClassReserved = coachClassReserved;
 	}
 	
 	public boolean isValid() {
 		return true;
+		
 	}
 	
 	public String toString(boolean debug) {
+		
 		String printStr;
 		if (debug) {
-			printStr = number+" :: "+departure.code() +" "+"flight duration"+" :: "+flightDuration +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime
-			+" :: First Class reserved:"+ firstClassCapacity+" First Class Price: $"+ firstClassPrice+" "+" :: Coach Class reserved:"+coachClassCapacity+" Coach Class Price: $"+ coachClassPrice;
+			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+this.departureDate.toLocalDate().toString()
+					+" : " + departureTime+" ===> "+arrival.code()+" "+this.arrivalDate().toLocalDate().toString() + " : " +arrivalTime;
 		} else {
 			printStr = number+" :: "+departure.code() +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime;
 		}
@@ -92,6 +94,10 @@ public class Flight {
 		return this.arrival;
 	}
 	
+	public Airport departureAirport() {
+		return this.departure;
+	}
+	
 	public String arrivalTime() {
 		return this.arrivalTime;
 	}
@@ -100,14 +106,14 @@ public class Flight {
 		return this.departureTime;
 	}
 	
-	public int flightDuration() {
-		return Integer.parseInt(this.flightDuration);
-	}
+	//public int flightDuration() {
+	//	return Integer.parseInt(this.flightDuration);
+	//}
 	
 	public ZonedDateTime departureDate() {
 		return this.departureDate;
 	}
-	
+		
 	public ZonedDateTime arrivalDate() {
 		return this.arrivalDate;
 	}
@@ -118,6 +124,14 @@ public class Flight {
 	
 	public float getCoachClassPrice() {
 		return this.coachClassPrice;
+	}
+	
+	public boolean isFirstClassAvailable() {
+		return this.firstClassReserved < this.aplane.getFirstClassCapacity();
+	}
+	
+	public boolean isCoachClassAvailable() {
+		return this.coachClassReserved < this.aplane.getCoachClassCapacity();
 	}
 }
 

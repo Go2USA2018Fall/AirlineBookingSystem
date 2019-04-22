@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
+import airplane.Airplane;
 import airplane.Airplanes;
 import airport.Airports;
 import flight.Flights;
@@ -103,7 +105,7 @@ public enum ServerInterface {
 	 * @return collection of Flights from server or null if error.
 	 * @throws Exception 
 	 */
-	public Flights getFlightsFrom (String airport, String date) throws Exception {
+	public Flights getFlightsFrom (String airport, String date, Map<String, Airplane> airplaneData) throws Exception {
 
 		URL url;
 		HttpURLConnection connection;
@@ -149,9 +151,59 @@ public enum ServerInterface {
 		}
 
 		xmlFlights = result.toString();
-		flights = DaoFlight.addAll(xmlFlights);
+		flights = DaoFlight.addAll(xmlFlights, airplaneData);
 		return flights;
 		
+	}
+	
+	public Flights getFlightsTo(String airport, String date, Map<String, Airplane> airplaneData) throws Exception  {
+
+		URL url;
+		HttpURLConnection connection;
+		BufferedReader reader;
+		String line;
+		StringBuffer result = new StringBuffer();
+		
+		String xmlFlights;
+		Flights flights;
+
+		try {
+			/**
+			 * Create an HTTP connection to the server for a GET 
+			 * QueryFactory provides the parameter annotations for the HTTP GET query string
+			 */
+			url = new URL(mUrlBase + QueryFactory.getFlightsTo(teamName, airport, date));
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", teamName);
+
+			/**
+			 * If response code of SUCCESS read the XML string returned
+			 * line by line to build the full return string
+			 */
+			int responseCode = connection.getResponseCode();
+			if (responseCode >= HttpURLConnection.HTTP_OK) {
+				InputStream inputStream = connection.getInputStream();
+				String encoding = connection.getContentEncoding();
+				encoding = (encoding == null ? "UTF-8" : encoding);
+
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				while ((line = reader.readLine()) != null) {
+					result.append(line);
+				}
+				reader.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		xmlFlights = result.toString();
+		flights = DaoFlight.addAll(xmlFlights, airplaneData);
+		return flights;
 	}
 	
 	/**

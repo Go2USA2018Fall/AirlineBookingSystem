@@ -53,7 +53,7 @@ public class DaoAirplane {
 		// Load the XML string into a DOM tree for ease of processing
 		// then iterate over all nodes adding each airport to our collection
 		Document docAirplanes = buildDomDoc (xmlAirplanes);
-		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airplanes");
+		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airplane");
 		
 		for (int i = 0; i < nodesAirplanes.getLength(); i++) {
 			Element elementAirplane = (Element) nodesAirplanes.item(i);
@@ -85,7 +85,7 @@ public class DaoAirplane {
 		
 		// The airport element has attributes of Name and 3 character airport code
 		Element elementAirplane = (Element) nodeAirplane;
-		airplanemanufacture = elementAirplane.getAttributeNode("Airplane Manufacturer").getValue();
+		airplanemanufacture = elementAirplane.getAttributeNode("Manufacturer").getValue();
 		model = elementAirplane.getAttributeNode("Model").getValue();
 		
 		// The latitude and longitude are child elements
