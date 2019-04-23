@@ -68,4 +68,10 @@ public class Trip {
 	public boolean confirm() {
 		return true;
 	}
+
+	public String getSeatClass() {
+		return seatClass;
+	}
+	
+	
 }

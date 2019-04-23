@@ -133,5 +133,9 @@ public class Flight {
 	public boolean isCoachClassAvailable() {
 		return this.coachClassReserved < this.aplane.getCoachClassCapacity();
 	}
+	
+	public String getNumber() {
+		return number;
+	}
 }
 

@@ -52,5 +52,15 @@ public class QueryFactory {
 		return "team=" + teamName + "&action=unlockDB";
 	}
 	
-
+	/**
+	 * Reserve seat on different flights 
+	 * 
+	 * @param teamName
+	 * @param xmlFlights
+	 * @return  the String written to the HTTP POST to reserve seat on flights
+	 */
+	public static String reserveSeat(String teamName,String xmlFlights){
+		return "team=" + teamName + "&action=buyTickets" + "&flightData=" +xmlFlights;
+	}
+	
 }

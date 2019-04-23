@@ -13,8 +13,10 @@ import java.util.Collections;
 
 import airport.Airport;
 import airport.Airports;
+import dao.DaoReservation;
 import dao.ServerInterface;
 import flight.Flights;
+import trip.Trip;
 import trip.Trips;
 import tripfinder.TripFinder;
 import utils.ArrivalComparator;
@@ -36,7 +38,7 @@ import TripRequest.TripRequest;
 public class Driver {
 	
 	private static String teamName = "NoName";
-
+	private static boolean exitFlag = false;
 	/**
 	 * Entry point for CS509 sample code driver
 	 * 
@@ -51,13 +53,25 @@ public class Driver {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
-		//TripRequest tripRequest = parseInput(reader, airports);
+//		TripRequest tripRequest = parseInput(reader, airports);
 		TripRequest tripRequest = testInput(reader, airports);
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
 		}
+		boolean confirmSelection = false;
+		//do the trip confirmation step here.
+		while((!exitFlag)&&!confirmSelection){
+			Trips selectedTrips = searchTrips(reader,tripRequest);
+			confirmSelection = confirmBooking(reader,selectedTrips);
+		}
+
 		
+		
+	}
+	
+	public static Trips searchTrips(BufferedReader reader,TripRequest tripRequest) throws Exception{
+		Trips selectedTrips = new Trips();
 		TripFinder tripFinder = new TripFinder(tripRequest);
 		Trips firstLegTrips = tripFinder.findFirstLegTrips();
 		Collections.sort(firstLegTrips, new DepartureComparator());
@@ -72,7 +86,8 @@ public class Driver {
 			String input = reader.readLine();
 			if (input.startsWith("select") && firstLeg) {
 				int firstLegIndex = Integer.parseInt(input.split(" ")[1]); 
-				System.out.println(firstLegTrips.get(firstLegIndex));
+				System.out.println("You have selected Trip: "+firstLegTrips.get(firstLegIndex));
+				selectedTrips.add(firstLegTrips.get(firstLegIndex));
 				if (tripRequest.isRoundTrip()) {
 					firstLeg = false;
 					secondLegTrips = tripFinder.findSecondLegTrips();
@@ -80,11 +95,16 @@ public class Driver {
 					secondLegTrips.print();
 					System.out.println("SECOND LEG TRIPS");
 				}
+				else if(!tripRequest.isRoundTrip()){
+					loopValid = false;
+				}
 			}
 			
 			else if (input.startsWith("select") && !firstLeg) {
 				int secondLegIndex = Integer.parseInt(input.split(" ")[1]);
 				System.out.println(secondLegTrips.get(secondLegIndex));
+				selectedTrips.add(secondLegTrips.get(secondLegIndex));
+				loopValid = false;
 			}
 			
 			else if (input.startsWith("sort")) {
@@ -105,17 +125,19 @@ public class Driver {
 				}
 			} else if (input.startsWith("exit")) {
 				loopValid = false;
+				exitFlag = true;
 			}
-		}		
+		}
+		return selectedTrips;
+		
 	}
 	
 	/**
 	 * Handle the UI display when User choose one way trip option. 
 	 * It will handle User input and use it for searching trip
 	 * 
-	 * @param input
+	 * @param reader
 	 * @param airports
-	 * @param teamName
 	 * @throws Exception 
 	 * @pre user choose one way as their trip option 
 	 * @post user input will be verified and invoke search function.
@@ -213,60 +235,70 @@ public class Driver {
 		airports.print();
 		Airport departure = airports.get(25);
 		Airport arrival = airports.get(27);
-		return new TripRequest(departure, arrival, "2019_05_18", "2019_05_17", "2019_06_04", "2019_05_18", false, false, true,
+		return new TripRequest(departure, arrival, "2019_05_18", "2019_05_17", "2019_06_04", "2019_05_18", false, false, false,
 				"00:01", "23:00", "00:01", "23:59");
 	}
 	
-	/**
-	 * Handle the UI display when User choose round trip option. 
-	 * It will handle User input and use it for searching trip
-	 * 
-	 * @param input
-	 * @param airports
-	 * @param teamName
-	 * @throws Exception 
-	 * 
-	 * @pre user choose round trip as their trip option 
-	 * @post user input will be verified and invoke search function.
-	 */
-	public static void roundTrip(Scanner input, Airports airports,String teamName) throws Exception{
-		System.out.println("Please input the number of the departure airport: ");
-		int departureAirportIndex = input.nextInt();
-		System.out.println("Please input the number of the arrival airport: ");
-		int arrival = input.nextInt();
-		String departureDate = null;
-		String returndepartureDate = null;
-		do {
-			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
-			departureDate = input.next();
-		} while (!isValidDate(departureDate));
-		do {
-			System.out.println("Please input the Date of departure(yyyy_mm_dd);");
-			returndepartureDate = input.next();
-		} while (!isValidDate(returndepartureDate));
-		String airportCode = airports.get(departureAirportIndex).code();
-		System.out.println("Here is a list of flight leaving from "+airportCode);
-		//ServerInterface.INSTANCE.getFlightsFrom(airportCode, departureDate).print();
-		//currently just display a list of flight from departure airport. will be changed in the future iteration to complete search function. 
-	}
 	
-
-	/**
-	 * Validate the time format of user input. 
-	 * 
-	 * @param inDate
-	 * @return boolean
-	 */
-	public static boolean isValidDate(String inDate) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Saps.DAY_FORMAT);
-		dateFormat.setLenient(false);
+	
+	private static boolean confirmBooking(BufferedReader reader, Trips selectedTrips){
+		System.out.println("Are you sure you want book this trip? (Yes/No)");
 		try {
-			dateFormat.parse(inDate.trim());
-		} catch (ParseException pe) {
-			System.out.println("Date formate is wrong! Please enter the correct formate(MM/DD/YYYY): ");
+			String tripConfirm = reader.readLine();
+			if(tripConfirm.equalsIgnoreCase("Yes")){
+				String xml_asString = DaoReservation.buildXML(selectedTrips);
+				boolean lockStatus = ServerInterface.INSTANCE.lock();
+				if(lockStatus){
+					System.out.println(xml_asString);
+					boolean reserveStatus = ServerInterface.INSTANCE.bookFlights(xml_asString);
+					if(reserveStatus){
+						ServerInterface.INSTANCE.unlock();
+						return true;
+					}
+					else{
+						return false;
+					}
+					
+				}
+				else{
+					return false;
+				}
+				
+
+			}
+			else if (tripConfirm.equalsIgnoreCase("No")){
+				//need to go back to select trip
+				return false;
+			}
+			else{
+				return false;
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Please give correct input!" +e.getMessage());
 			return false;
 		}
-		return true;
+		
+		
 	}
+	
+//	/**
+//	 * Validate the time format of user input. 
+//	 * 
+//	 * @param inDate
+//	 * @return boolean
+//	 */
+//	public static boolean isValidDate(String inDate) {
+//		SimpleDateFormat dateFormat = new SimpleDateFormat(Saps.DAY_FORMAT);
+//		dateFormat.setLenient(false);
+//		try {
+//			dateFormat.parse(inDate.trim());
+//		} catch (ParseException pe) {
+//			System.out.println("Date formate is wrong! Please enter the correct formate(MM/DD/YYYY): ");
+//			return false;
+//		}
+//		return true;
+//	}
 
 }

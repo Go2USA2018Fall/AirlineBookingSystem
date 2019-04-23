@@ -371,4 +371,46 @@ public enum ServerInterface {
 		}
 		return true;
 	}
+	
+	public boolean bookFlights(String xmlFlights) {
+		URL url;
+		HttpURLConnection connection;
+
+		try {
+			url = new URL(mUrlBase);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("User-Agent", teamName);
+			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+			
+			String params = QueryFactory.reserveSeat(teamName, xmlFlights);
+			
+			connection.setDoOutput(true);
+			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
+			writer.writeBytes(params);
+			writer.flush();
+			writer.close();
+			
+			int responseCode = connection.getResponseCode();
+			System.out.println("\nSending 'POST' to reserve seats");
+			System.out.println("\nResponse Code : " + responseCode);
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			StringBuffer response = new StringBuffer();
+			
+			while ((line = in.readLine()) != null) {
+				response.append(line);
+			}
+			in.close();
+			
+			System.out.println("response is "+response.toString());
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 }
