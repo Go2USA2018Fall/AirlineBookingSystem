@@ -42,7 +42,7 @@ public class DaoFlight {
 	 * @post the [possibly empty] set of Flights in the XML string are added to collection
 	 */
 
-	public static Flights addAll (String xmlFlights, Map<String, Airplane> airplaneData) throws Exception {
+	public static Flights addAll (String xmlFlights, Map<String, Airplane> airplaneData, Map<String, Airport> airportData ) throws Exception {
 		Flights flights = new Flights();
 		
 		// Load the XML string into a DOM tree for ease of processing
@@ -52,7 +52,7 @@ public class DaoFlight {
 		
 		for (int i = 0; i < nodesFlights.getLength(); i++) {
 			Element elementFlight = (Element) nodesFlights.item(i);
-			Flight flight = buildFlight (elementFlight, airplaneData);
+			Flight flight = buildFlight (elementFlight, airplaneData, airportData);
 			
 			if (flight.isValid()) {
 				flights.add(flight);
@@ -73,7 +73,7 @@ public class DaoFlight {
 	 * @pre nodeFlight is of format specified by CS509 server API
 	 * @post flight object instantiated. Caller responsible for deallocating memory.
 	 */
-	static private Flight buildFlight (Node nodeFlight, Map<String, Airplane> airplaneData) throws Exception {
+	static private Flight buildFlight (Node nodeFlight, Map<String, Airplane> airplaneData,  Map<String, Airport> airportData) throws Exception {
 		String airplane_id;
 		String flight_duration;
 		String number;
@@ -89,14 +89,14 @@ public class DaoFlight {
 		Element arrival_element = (Element)elementFlight.getElementsByTagName("Arrival").item(0);
 		Element arrival_code = (Element)arrival_element.getElementsByTagName("Code").item(0);
 		String code_value = getCharacterDataFromElement(arrival_code);
-		Airport arrival = new Airport();
-		arrival.code(code_value);
+		Airport arrival = airportData.get(code_value);
+//		arrival.code(code_value);
 		
 		Element departure_element = (Element)elementFlight.getElementsByTagName("Departure").item(0);
 		Element departure_code = (Element)departure_element.getElementsByTagName("Code").item(0);
 		String code_value1 = getCharacterDataFromElement(departure_code);
-		Airport departure = new Airport();
-		departure.code(code_value1);
+		Airport departure = airportData.get(code_value1);
+//		departure.code(code_value1);
 		
 		Element arrival_time = (Element)arrival_element.getElementsByTagName("Time").item(0);
 		String arrival_value = getCharacterDataFromElement(arrival_time);

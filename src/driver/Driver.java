@@ -24,6 +24,7 @@ import utils.DepartureComparator;
 import utils.DurationComparator;
 import utils.PriceComparator;
 import utils.Saps;
+import utils.TimeConverter;
 
 import java.util.Scanner;
 
@@ -51,10 +52,13 @@ public class Driver {
 	 */
 	public static void main(String[] args) throws Exception {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
+		//getting airport information and cache it
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
+		//
 //		TripRequest tripRequest = parseInput(reader, airports);
 		TripRequest tripRequest = testInput(reader, airports);
+		
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
@@ -62,7 +66,7 @@ public class Driver {
 		boolean confirmSelection = false;
 		//do the trip confirmation step here.
 		while((!exitFlag)&&!confirmSelection){
-			Trips selectedTrips = searchTrips(reader,tripRequest);
+			Trips selectedTrips = searchTrips(reader,tripRequest,airports);
 			confirmSelection = confirmBooking(reader,selectedTrips);
 		}
 
@@ -70,9 +74,9 @@ public class Driver {
 		
 	}
 	
-	public static Trips searchTrips(BufferedReader reader,TripRequest tripRequest) throws Exception{
+	public static Trips searchTrips(BufferedReader reader,TripRequest tripRequest,Airports airports) throws Exception{
 		Trips selectedTrips = new Trips();
-		TripFinder tripFinder = new TripFinder(tripRequest);
+		TripFinder tripFinder = new TripFinder(tripRequest,airports);
 		Trips firstLegTrips = tripFinder.findFirstLegTrips();
 		Collections.sort(firstLegTrips, new DepartureComparator());
 		firstLegTrips.print();

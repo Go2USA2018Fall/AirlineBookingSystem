@@ -2,6 +2,8 @@ package flight;
 
 import airport.Airport;
 
+
+
 //import java.text.DateFormat;
 //import java.text.ParseException;
 //import java.text.SimpleDateFormat;
@@ -11,6 +13,7 @@ import java.time.*;
 //import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatter;
 
+import utils.TimeConverter;
 import airplane.Airplane;
 
 public class Flight {
@@ -73,8 +76,10 @@ public class Flight {
 		
 		String printStr;
 		if (debug) {
-			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+this.departureDate.toLocalDate().toString()
-					+" : " + departureTime+" ===> "+arrival.code()+" "+this.arrivalDate().toLocalDate().toString() + " : " +arrivalTime;
+//			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+this.departureDate.toLocalDate().toString()
+//					+" : " + departureTime+" ===> "+arrival.code()+" "+this.arrivalDate().toLocalDate().toString() + " : " +arrivalTime;
+			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+TimeConverter.convertTime(this.departure.latitude(), this.departure.longitude(), this.departureDate) 
+					+" ===> "+arrival.code()+" " + TimeConverter.convertTime(this.arrival.latitude(), this.arrival.longitude(), this.arrivalDate);
 		} else {
 			printStr = number+" :: "+departure.code() +" "+ departureTime+" ===> "+arrival.code()+" "+arrivalTime;
 		}

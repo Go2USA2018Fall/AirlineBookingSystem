@@ -9,6 +9,7 @@ import TripRequest.TripRequest;
 import airplane.Airplane;
 import airplane.Airplanes;
 import airport.Airport;
+import airport.Airports;
 import dao.ServerInterface;
 import flight.Flight;
 import flight.Flights;
@@ -23,13 +24,18 @@ public class TripFinder {
 	private Map<String, Flights> flightCacheByDeparture = new HashMap<String, Flights>();
 	private Map<String, Flights> flightCacheByArrival = new HashMap<String, Flights>();
 	private Map<String, Airplane> airplaneData = new HashMap<String, Airplane>();
+	private Map<String, Airport> airportData = new HashMap<String, Airport>();
 	
-	public TripFinder(TripRequest tripRequest) {
+	public TripFinder(TripRequest tripRequest,Airports airports) {
 		this.tripRequest = tripRequest;
 		this.seatClass = tripRequest.getSeatClass();
 		Airplanes airplanes = ServerInterface.INSTANCE.getAirplanes();
 		for (Airplane airplane: airplanes) {
 			airplaneData.put(airplane.getModel(), airplane);
+		}
+		
+		for (Airport airport :airports){
+			airportData.put(airport.code(), airport);
 		}
 	}
 	
@@ -79,9 +85,9 @@ public class TripFinder {
 				tmpFlights = flightCacheByDeparture.get(flightKey);
 			else {
 				if (!returnTrip)
-					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString(), this.airplaneData);
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.departureDateString(), this.airplaneData,this.airportData);
 				else
-					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString(), this.airplaneData);
+					tmpFlights = ServerInterface.INSTANCE.getFlightsFrom(departure.code(), tripRequest.returnDepartureDateString(), this.airplaneData,this.airportData);
 				flightCacheByDeparture.put(flightKey, tmpFlights);
 			}
 			for (Flight tmpFlight: tmpFlights) {
@@ -112,9 +118,9 @@ public class TripFinder {
 				tmpFlights = flightCacheByArrival.get(flightKey);
 			else {
 				if (!returnTrip)
-					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.arrivalDateString(), this.airplaneData);
+					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.arrivalDateString(), this.airplaneData, this.airportData);
 				else
-					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.returnArrivalDateString(), this.airplaneData);
+					tmpFlights = ServerInterface.INSTANCE.getFlightsTo(arrival.code(), tripRequest.returnArrivalDateString(), this.airplaneData, this.airportData);
 				flightCacheByArrival.put(flightKey, tmpFlights);
 			}
 			for (Flight tmpFlight: tmpFlights) {

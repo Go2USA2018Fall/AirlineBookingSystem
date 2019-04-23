@@ -14,6 +14,7 @@ import java.util.Map;
 
 import airplane.Airplane;
 import airplane.Airplanes;
+import airport.Airport;
 import airport.Airports;
 import flight.Flights;
 import utils.QueryFactory;
@@ -105,7 +106,7 @@ public enum ServerInterface {
 	 * @return collection of Flights from server or null if error.
 	 * @throws Exception 
 	 */
-	public Flights getFlightsFrom (String airport, String date, Map<String, Airplane> airplaneData) throws Exception {
+	public Flights getFlightsFrom (String airport, String date, Map<String, Airplane> airplaneData, Map<String, Airport> airportData) throws Exception {
 
 		URL url;
 		HttpURLConnection connection;
@@ -151,12 +152,12 @@ public enum ServerInterface {
 		}
 
 		xmlFlights = result.toString();
-		flights = DaoFlight.addAll(xmlFlights, airplaneData);
+		flights = DaoFlight.addAll(xmlFlights, airplaneData,airportData);
 		return flights;
 		
 	}
 	
-	public Flights getFlightsTo(String airport, String date, Map<String, Airplane> airplaneData) throws Exception  {
+	public Flights getFlightsTo(String airport, String date, Map<String, Airplane> airplaneData, Map<String, Airport> airportData) throws Exception  {
 
 		URL url;
 		HttpURLConnection connection;
@@ -202,7 +203,7 @@ public enum ServerInterface {
 		}
 
 		xmlFlights = result.toString();
-		flights = DaoFlight.addAll(xmlFlights, airplaneData);
+		flights = DaoFlight.addAll(xmlFlights, airplaneData,airportData);
 		return flights;
 	}
 	

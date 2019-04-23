@@ -40,9 +40,9 @@ public class Validator {
 		}
 		String seatClass = tripRequest.getSeatClass();
 		for (Flight flight: tripFlights) {
-			if (seatClass.equals("coach")) {
+			if (seatClass.equals("Coach")) {
 				valid = valid && flight.isCoachClassAvailable();
-			} else if(seatClass.equals("firstclass")) {
+			} else if(seatClass.equals("FirstClass")) {
 				valid = valid && flight.isFirstClassAvailable();
 			}
 			
