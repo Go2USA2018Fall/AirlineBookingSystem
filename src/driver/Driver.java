@@ -55,10 +55,10 @@ public class Driver {
 		//getting airport information and cache it
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
-		//
+		
 //		TripRequest tripRequest = parseInput(reader, airports);
 		TripRequest tripRequest = testInput(reader, airports);
-		
+		System.out.println(TimeConverter.toUTCTime(42.366, -71.010, "2019_05_16 23:00"));
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
@@ -253,10 +253,14 @@ public class Driver {
 				String xml_asString = DaoReservation.buildXML(selectedTrips);
 				boolean lockStatus = ServerInterface.INSTANCE.lock();
 				if(lockStatus){
-					System.out.println(xml_asString);
 					boolean reserveStatus = ServerInterface.INSTANCE.bookFlights(xml_asString);
 					if(reserveStatus){
 						ServerInterface.INSTANCE.unlock();
+						System.out.println("The following trips have been successfully booked:");
+						for(Trip trip: selectedTrips){
+							System.out.println(trip.toString());
+						}
+						System.out.println("Thank you for using WPI Airline booking system!");
 						return true;
 					}
 					else{
@@ -283,26 +287,6 @@ public class Driver {
 			System.out.println("Please give correct input!" +e.getMessage());
 			return false;
 		}
-		
-		
 	}
-	
-//	/**
-//	 * Validate the time format of user input. 
-//	 * 
-//	 * @param inDate
-//	 * @return boolean
-//	 */
-//	public static boolean isValidDate(String inDate) {
-//		SimpleDateFormat dateFormat = new SimpleDateFormat(Saps.DAY_FORMAT);
-//		dateFormat.setLenient(false);
-//		try {
-//			dateFormat.parse(inDate.trim());
-//		} catch (ParseException pe) {
-//			System.out.println("Date formate is wrong! Please enter the correct formate(MM/DD/YYYY): ");
-//			return false;
-//		}
-//		return true;
-//	}
 
 }
