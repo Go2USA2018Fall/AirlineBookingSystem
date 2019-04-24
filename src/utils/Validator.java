@@ -2,6 +2,7 @@ package utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -78,8 +79,8 @@ public class Validator {
 	}
 	
 	public static boolean validateTimeFrame(Trip trip, TripRequest tripRequest, boolean secondLeg) {
-		LocalTime lower = null;
-		LocalTime higher = null;
+		LocalDateTime lower = null;
+		LocalDateTime higher = null;
 		if (secondLeg) {
 			lower = tripRequest.earliestSecond();
 			higher = tripRequest.latestSecond();
@@ -89,10 +90,10 @@ public class Validator {
 			higher = tripRequest.latestFirst();
 		}
 		if (tripRequest.searchByDeparture()) {
-			LocalTime departureTime = trip.getDepartureDateTime().toLocalTime();
+			LocalDateTime departureTime = trip.getDepartureDateTime().toLocalDateTime();
 			return departureTime.isAfter(lower) && departureTime.isBefore(higher);
 		}
-		LocalTime arrivalTime = trip.getArrivalDateTime().toLocalTime();
+		LocalDateTime arrivalTime = trip.getArrivalDateTime().toLocalDateTime();
 		return arrivalTime.isAfter(lower) && arrivalTime.isBefore(higher);
 	}
 }

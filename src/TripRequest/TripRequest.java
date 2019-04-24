@@ -1,8 +1,11 @@
 package TripRequest;
 
 import airport.Airport;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+
+import utils.TimeConverter;
 
 
 
@@ -19,10 +22,10 @@ public class TripRequest {
 	private LocalDate returnDepartureDate;
 	private LocalDate returnArrivalDate;
 	private String invalidMessage = "No Error";
-	private LocalTime earliestFirst;
-	private LocalTime earliestSecond;
-	private LocalTime latestFirst;
-	private LocalTime latestSecond;
+	private LocalDateTime earliestFirst;
+	private LocalDateTime earliestSecond;
+	private LocalDateTime latestFirst;
+	private LocalDateTime latestSecond;
 	
 	public TripRequest() {
 		return;
@@ -33,7 +36,7 @@ public class TripRequest {
 			String earliestFirst, String latestFirst, String earliestSecond, String latestSecond) throws Exception {
 		
 		DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("yyyy_MM_dd");
-		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("yyyy_MM_dd HH:mm");
 
 		try {
 			this.departureDate = LocalDate.parse(departureDate, dateParser);;
@@ -41,11 +44,11 @@ public class TripRequest {
 			this.returnDepartureDate = LocalDate.parse(returnDepartureDate, dateParser);;
 			this.returnArrivalDate = LocalDate.parse(returnArrivalDate, dateParser);;
 			this.isInvalid = false;
-			this.earliestFirst = LocalTime.parse(earliestFirst, timeParser);
-			this.latestFirst = LocalTime.parse(latestFirst, timeParser);
+			this.earliestFirst = LocalDateTime.parse(earliestFirst, timeParser);
+			this.latestFirst = LocalDateTime.parse(latestFirst, timeParser);
 			if (!oneWay) {
-				this.earliestSecond = LocalTime.parse(earliestSecond, timeParser);
-				this.latestSecond = LocalTime.parse(latestSecond, timeParser);
+				this.earliestSecond = LocalDateTime.parse(earliestSecond, timeParser);
+				this.latestSecond = LocalDateTime.parse(latestSecond, timeParser);
 			}
 		} catch(Exception e) {
 			this.isInvalid = true;
@@ -125,17 +128,57 @@ public class TripRequest {
 	}
 	
 	public void timeFrame(String earliest, String latest) {
-		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
+		
+/*		old code
+ * 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
 		this.earliestFirst = LocalTime.parse(earliest, timeParser);
-		this.latestFirst = LocalTime.parse(latest, timeParser);		
+		this.latestFirst = LocalTime.parse(latest, timeParser);	
+		*/	
+		if(this.searchByDeparture){
+			String elocalDate = this.departureDateString() +" " +earliest;
+			this.earliestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), elocalDate);
+			String llocalDate = this.departureDateString() +" " +latest;
+			this.latestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), llocalDate);
+		}
+		else{
+			String elocalDate = this.arrivalDateString() +" " +earliest;
+			this.earliestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), elocalDate);
+			String llocalDate = this.arrivalDateString() +" " +latest;
+			this.latestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), llocalDate);
+		}
+		
 	}
 	
 	public void timeFrame(String earliestFirst, String latestFirst, String earliestSecond, String latestSecond) {
-		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
+		
+		if(this.searchByDeparture){
+			String eflocalDate = this.departureDateString() +" " +earliestFirst;
+			this.earliestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eflocalDate);
+			String lflocalDate = this.departureDateString() +" " +latestFirst;
+			this.latestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lflocalDate);
+			String eslocalDate = this.arrivalDateString() +" " +earliestSecond;
+			this.earliestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eslocalDate);
+			String lslocalDate = this.arrivalDateString() +" " +latestSecond;
+			this.latestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lslocalDate);
+			
+		}
+		else{
+			String eflocalDate = this.arrivalDateString() +" " +earliestFirst;
+			this.earliestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eflocalDate);
+			String lflocalDate = this.arrivalDateString() +" " +latestFirst;
+			this.latestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lflocalDate);
+			String eslocalDate = this.departureDateString() +" " +earliestSecond;
+			this.earliestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eslocalDate);
+			String lslocalDate = this.departureDateString() +" " +latestSecond;
+			this.latestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lslocalDate);
+		}
+		
+/*		old code
+ * 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
 		this.earliestFirst = LocalTime.parse(earliestFirst, timeParser);
 		this.latestFirst = LocalTime.parse(latestFirst, timeParser);	
 		this.earliestSecond = LocalTime.parse(earliestSecond, timeParser);
-		this.latestSecond = LocalTime.parse(latestSecond, timeParser);
+		this.latestSecond = LocalTime.parse(latestSecond, timeParser);*/
 	}
 	
 	public boolean isInvalid() {
@@ -194,19 +237,19 @@ public class TripRequest {
 		return !this.oneWay;
 	}
 	
-	public LocalTime earliestFirst() {
+	public LocalDateTime earliestFirst() {
 		return this.earliestFirst;
 	}
 	
-	public LocalTime earliestSecond() {
+	public LocalDateTime earliestSecond() {
 		return this.earliestSecond;
 	}
 	
-	public LocalTime latestFirst() {
+	public LocalDateTime latestFirst() {
 		return this.latestFirst;
 	}
 	
-	public LocalTime latestSecond() {
+	public LocalDateTime latestSecond() {
 		return this.latestSecond;
 	}
 }

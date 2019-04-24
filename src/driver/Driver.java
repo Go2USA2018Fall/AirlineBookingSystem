@@ -58,7 +58,6 @@ public class Driver {
 		
 //		TripRequest tripRequest = parseInput(reader, airports);
 		TripRequest tripRequest = testInput(reader, airports);
-		System.out.println(TimeConverter.toUTCTime(42.366, -71.010, "2019_05_16 23:00"));
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
@@ -163,6 +162,12 @@ public class Driver {
 		int departureAirportIndex = Integer.parseInt(reader.readLine());
 		System.out.println("Please select the arrival airport: ");
 		int arrivalAirportIndex = Integer.parseInt(reader.readLine());
+		
+		Airport departure = airports.get(departureAirportIndex);
+		Airport arrival = airports.get(arrivalAirportIndex);
+		tripRequest.departure(departure);
+		tripRequest.arrival(arrival);
+		
 		if (oneWay) {
 			if (searchByDeparture) {
 				System.out.println("Please input the departure date (yyyy_mm_dd);");
@@ -228,10 +233,6 @@ public class Driver {
 		int seatType = Integer.parseInt(reader.readLine());
 		boolean economySeat = (seatType == 1);
 		tripRequest.seatClass(economySeat);
-		Airport departure = airports.get(departureAirportIndex);
-		Airport arrival = airports.get(arrivalAirportIndex);
-		tripRequest.departure(departure);
-		tripRequest.arrival(arrival);
 		return tripRequest;
 	}
 	
@@ -239,8 +240,11 @@ public class Driver {
 		airports.print();
 		Airport departure = airports.get(25);
 		Airport arrival = airports.get(27);
+//		return new TripRequest(departure, arrival, "2019_05_18", "2019_05_17", "2019_06_04", "2019_05_18", false, false, false,
+//				"00:01", "23:00", "00:01", "23:59");
+		//The time frame we are entering here is UTC time zone
 		return new TripRequest(departure, arrival, "2019_05_18", "2019_05_17", "2019_06_04", "2019_05_18", false, false, false,
-				"00:01", "23:00", "00:01", "23:59");
+				"2019_05_17 00:01", "2019_05_17 23:00", "2019_05_18 00:01", "2019_05_18 23:59");
 	}
 	
 	

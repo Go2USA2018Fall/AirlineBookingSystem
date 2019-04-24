@@ -24,8 +24,7 @@ public class TimeConverter {
 	public static String convertTime(double lat, double lg,ZonedDateTime time){
 		String ZoneId_AsString = TimezoneMapper.latLngToTimezoneString(lat, lg);
 		ZoneId zoneId = ZoneId.of(ZoneId_AsString);
-		LocalDateTime ldt = time.toLocalDateTime();
-		ZonedDateTime localZonedDateTime = ldt.atZone(zoneId);
+		ZonedDateTime localZonedDateTime = time.withZoneSameInstant(zoneId);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		return format.format(localZonedDateTime);
 	}
@@ -39,8 +38,7 @@ public class TimeConverter {
 	 * @param time
 	 * @return
 	 */
-	public static String toUTCTime(double lat,double lg, String time){
-		
+	public static LocalDateTime toUTCTime(double lat,double lg, String time){
 		String ZoneId_AsString = TimezoneMapper.latLngToTimezoneString(lat, lg);
 		ZoneId zoneId = ZoneId.of(ZoneId_AsString);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(INPUT_DATE_FORMAT);
@@ -48,7 +46,6 @@ public class TimeConverter {
 		ZonedDateTime zdtlocal = ZonedDateTime.of(timeLocal, zoneId);
 		ZoneId zoneUTC = ZoneId.of("UTC");
 		ZonedDateTime utczdt =  zdtlocal.withZoneSameInstant(zoneUTC);
-		
-		return utczdt.format(format);	
+		return utczdt.toLocalDateTime();	
 	}
 }
