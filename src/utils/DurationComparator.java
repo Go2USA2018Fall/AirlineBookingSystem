@@ -3,7 +3,12 @@ package utils;
 import java.util.Comparator;
 
 import trip.Trip;
-
+/**
+ * use to sort list by duration 
+ * 
+ * @author Michiele
+ *
+ */
 public class DurationComparator implements Comparator<Trip> {
 
 	@Override

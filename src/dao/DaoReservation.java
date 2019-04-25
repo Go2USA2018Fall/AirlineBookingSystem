@@ -28,7 +28,14 @@ import trip.Trip;
 import trip.Trips;
 
 public class DaoReservation {
-	
+	/**
+	 * parse user selected trip to xml file for user to book flights
+	 * 
+	 * @param selectedTrips
+	 * @return String xml string that contain flights user want to book 
+	 * @pre user have selected trips and confirm booking
+	 * @post construct xml string that contain flights user want to book 
+	 */
 	public static String buildXML(Trips selectedTrips){
 		String result_XML = null;
 		 try {

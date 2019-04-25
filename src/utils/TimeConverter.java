@@ -20,6 +20,9 @@ public class TimeConverter {
 	 * @param time
 	 * @return
 	 * @throws Exception
+	 * @pre valid UTC time with latitude and longitude for time zone trying to convert to 
+	 * @post valid local time in the appropriate time zone
+	 * 
 	 */
 	public static String convertTime(double lat, double lg,ZonedDateTime time){
 		String ZoneId_AsString = TimezoneMapper.latLngToTimezoneString(lat, lg);
@@ -37,6 +40,9 @@ public class TimeConverter {
 	 * @param lg
 	 * @param time
 	 * @return
+	 * 
+	 * @pre valid local time from user input with latitude and longitude of time zone the time belong to
+	 * @post convert local time to valid UTC time 
 	 */
 	public static LocalDateTime toUTCTime(double lat,double lg, String time){
 		String ZoneId_AsString = TimezoneMapper.latLngToTimezoneString(lat, lg);

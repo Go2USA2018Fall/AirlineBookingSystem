@@ -4,7 +4,12 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 
 import trip.Trip;
-
+/**
+ * use to sort the list by arrival time
+ * 
+ * @author Michiele
+ *
+ */
 public class ArrivalComparator implements Comparator<Trip> {
 
 	@Override

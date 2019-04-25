@@ -14,7 +14,17 @@ import trip.Trip;
 import trip.Trips;
 
 public class Validator {
-
+	
+	/**
+	 * Iterate through list of trip and get the valide trip base on the requirement(layovertime,layover number, time frame)
+	 * @param trips
+	 * @param tripRequest
+	 * @param secondLegTrips
+	 * @return
+	 * @throws Exception
+	 * @pre list of trips from search function 
+	 * @post list of valid trip base on the requirement
+	 */
 	public static Trips validateTrips(Trips trips, TripRequest tripRequest, boolean secondLegTrips) throws Exception {
 		Trips validatedTrips = new Trips();
 		for (Trip trip : trips) {
@@ -23,7 +33,16 @@ public class Validator {
 		}
 		return validatedTrips;
 	}
-	
+	/**
+	 * Validate trip base on the requirement(layovertime,layover number, time frame)
+	 * 
+	 * 
+	 * @param trip
+	 * @param tripRequest
+	 * @param secondLegTrips
+	 * @return
+	 * @throws Exception
+	 */
 	private static boolean validateTrip(Trip trip, TripRequest tripRequest, boolean secondLegTrips) throws Exception {
 		boolean valid = true;
 		Flights tripFlights = trip.tripFlights();
@@ -55,12 +74,17 @@ public class Validator {
 		return valid;
 	}
 	
-//	private static boolean validateFlightDates(Flight arrivalFlight, TripRequest tripRequest) {
-//		
-//		boolean valid =  arrivalFlight.arrivalDate().before(tripRequest.arrivalDate());
-//		return valid;
-//	}
-
+	
+/**
+ * filter trip by time duration between flights
+ * 
+ * @param first
+ * @param second
+ * @return
+ * @throws Exception
+ * @pre two connected flights from trip
+ * @post true/false the flights match the min time requirement 
+ */
 	private static boolean validateConnectingFlights(Flight first, Flight second) throws Exception {
 		boolean valid = true;
 		
@@ -78,6 +102,15 @@ public class Validator {
 		return valid;
 	}
 	
+	/**
+	 * filter trip by time frame 
+	 * @param trip
+	 * @param tripRequest
+	 * @param secondLeg
+	 * @return
+	 * @pre trip from the list of trips
+	 * @post true/false the flights match user defined time frame 
+	 */
 	public static boolean validateTimeFrame(Trip trip, TripRequest tripRequest, boolean secondLeg) {
 		LocalDateTime lower = null;
 		LocalDateTime higher = null;

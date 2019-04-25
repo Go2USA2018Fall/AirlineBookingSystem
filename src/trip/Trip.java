@@ -16,7 +16,9 @@ public class Trip {
 		this.oneWayFlights = flights;
 		this.seatClass = seatClass;
 	}
-
+	/**
+	 * Calculate the entire trip total price. 
+	 */
 	public void calculatePrice() {
 		for (Flight flight : this.oneWayFlights) {
 			if (this.seatClass == "Coach")
@@ -49,6 +51,11 @@ public class Trip {
 		return this.oneWayFlights.get(size - 1).arrivalDate();
 	}
 
+	/**
+	 * Calculate the duration of entire trip
+	 * 
+	 * @return
+	 */
 	public double duration() {
 		ZonedDateTime departure = this.getDepartureDateTime();
 		ZonedDateTime arrival = this.getArrivalDateTime();

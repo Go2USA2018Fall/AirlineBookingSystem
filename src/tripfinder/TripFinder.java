@@ -16,7 +16,17 @@ import flight.Flights;
 import trip.Trip;
 import trip.Trips;
 import utils.Validator;
-
+/**
+ * Handle search trip 
+ * 
+ * @param departure
+ * @param arrival
+ * @param trips
+ * @param flights
+ * @param stopOver
+ * @param returnTrip
+ * @throws Exception
+ */
 public class TripFinder {
 	
 	private TripRequest tripRequest;
@@ -26,6 +36,11 @@ public class TripFinder {
 	private Map<String, Airplane> airplaneData = new HashMap<String, Airplane>();
 	private Map<String, Airport> airportData = new HashMap<String, Airport>();
 	
+	/**
+	 * ctor 
+	 * @param tripRequest
+	 * @param airports
+	 */
 	public TripFinder(TripRequest tripRequest,Airports airports) {
 		this.tripRequest = tripRequest;
 		this.seatClass = tripRequest.getSeatClass();
@@ -38,7 +53,12 @@ public class TripFinder {
 			airportData.put(airport.code(), airport);
 		}
 	}
-	
+	/**
+	 * search first leg trip 
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public Trips findFirstLegTrips() throws Exception {
 		int stopOver = 0;
 		Trips trips = new Trips();
@@ -53,6 +73,11 @@ public class TripFinder {
 		return trips;
 	}
 	
+	/**
+	 * search return trip
+	 * @return
+	 * @throws Exception
+	 */
 	public Trips findSecondLegTrips() throws Exception {
 		int stopOver = 0;
 		Trips trips = new Trips();
@@ -67,6 +92,21 @@ public class TripFinder {
 		return trips;
 	}
 	
+	/**
+	 * search trip by departure date recursively 
+	 * 
+	 * 
+	 * @param departure
+	 * @param arrival
+	 * @param trips
+	 * @param flights
+	 * @param stopOver
+	 * @param returnTrip
+	 * @throws Exception
+	 * @pre have a valid airport and departure date
+	 * @post get flight that departure from the input airport with correct date time. 
+	 * 
+	 */
 	private void findTripByDeparture(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
 		if (stopOver > 2) {
 			return;
@@ -100,6 +140,19 @@ public class TripFinder {
 		}
 	}
 	
+	/**
+	 * search trip by arrival date recursively
+	 * 
+	 * @param departure
+	 * @param arrival
+	 * @param trips
+	 * @param flights
+	 * @param stopOver
+	 * @param returnTrip
+	 * @throws Exception
+	 * @pre have a valid airport and arrival date
+	 * @post get flight that arrive to the input airport with correct date time. 
+	 */
 	private void findTripByArrival(Airport departure, Airport arrival, Trips trips, Flights flights, int stopOver, boolean returnTrip) throws Exception {
 		if (stopOver > 2) {
 			return;

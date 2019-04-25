@@ -31,6 +31,8 @@ import java.util.Scanner;
 import TripRequest.TripRequest;
 
 /**
+ * Manage the console displaying and user input
+ * 
  * @author Yijie Yan
  * @since 2019-03-15
  * @version 1.0
@@ -152,6 +154,17 @@ public class Driver {
 		
 	}
 	
+	/**
+	 * Search trip that contain flights from departure airport to arrival airport
+	 * 
+	 * @param reader
+	 * @param tripRequest: object contain user trip search input
+	 * @param airports: list of airport
+	 * @return Trips: list of trip result after search
+	 * @pre user input search requirement and it is valid
+	 * @post return valid list of trips
+	 * @throws Exception
+	 */
 	public static Trips searchTrips(BufferedReader reader,TripRequest tripRequest,Airports airports) throws Exception{
 		Trips selectedTrips = new Trips();
 		TripFinder tripFinder = new TripFinder(tripRequest,airports);
@@ -229,9 +242,9 @@ public class Driver {
 	 * It will handle User input and use it for searching trip
 	 * 
 	 * @param reader
-	 * @param airports
+	 * @param airports: List of airport
 	 * @throws Exception 
-	 * @pre user choose one way as their trip option 
+	 * @pre user launch the program 
 	 * @post user input will be verified and invoke search function.
 	 */
 	public static TripRequest parseInput(BufferedReader reader, Airports airports) throws Exception {
@@ -325,6 +338,14 @@ public class Driver {
 		return tripRequest;
 	}
 	
+	/**
+	 * Test input for construct trip request
+	 * 
+	 * @param reader
+	 * @param airports
+	 * @return 
+	 * @throws Exception
+	 */
 	private static TripRequest testInput(BufferedReader reader, Airports airports) throws Exception {
 		airports.print();
 		Airport departure = airports.get(25);
@@ -337,7 +358,16 @@ public class Driver {
 	}
 	
 	
-	
+	/**
+	 * method  contact back-end server to book the tirp and prompt user the booking result
+	 * 
+	 * 
+	 * @param reader
+	 * @param selectedTrips: list of trip that user selected for booking
+	 * @return boolean: true/flase booking is successful or not 
+	 * @pre user have selected trip or trips that they want to book and confirm 
+	 * @post contacted server and return whether booking the flights is successful or not 
+	 */
 	private static boolean confirmBooking(BufferedReader reader, Trips selectedTrips){
 		String xml_asString = DaoReservation.buildXML(selectedTrips);
 		boolean lockStatus = ServerInterface.INSTANCE.lock();
@@ -370,6 +400,13 @@ public class Driver {
 		}
 	}
 	
+	/**
+	 * handle retry of of user input if program encounter an error
+	 * 
+	 * @param reader
+	 * @return boolean
+	 * @throws Exception
+	 */
 	private static boolean retry(BufferedReader reader) throws Exception {
 		message("1) Retry with new inputs, 2) Exit  : ", false);
 		String response = reader.readLine();

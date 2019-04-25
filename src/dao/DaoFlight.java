@@ -38,6 +38,7 @@ public class DaoFlight {
 	 * @param xmlFlights XML string containing set of Flights 
 	 * @return [possibly empty] collection of Flights in the xml string
 	 * @throws Exception 
+	 * 
 	 * @pre the xmlFlights string adheres to the format specified by the server API
 	 * @post the [possibly empty] set of Flights in the XML string are added to collection
 	 */
@@ -138,6 +139,8 @@ public class DaoFlight {
 	 * 
 	 * @param xmlString XML String containing set of objects
 	 * @return DOM tree from parsed XML or null if exception is caught
+	 * @pre successfully got xml file
+	 * @post parsed xml file to document data type
 	 */
 	static private Document buildDomDoc (String xmlString) {
 		/**

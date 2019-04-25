@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 import utils.TimeConverter;
 /**
+ * construct trip request base on user input also validate the input
  * 
  * @author Yijie Yan
  *
@@ -32,7 +33,24 @@ public class TripRequest {
 	public TripRequest() {
 		return;
 	}
-	
+	/**
+	 * ctor
+	 * 
+	 * @param departure
+	 * @param arrival
+	 * @param departureDate
+	 * @param arrivalDate
+	 * @param returnDepartureDate
+	 * @param returnArrivalDate
+	 * @param oneWay
+	 * @param economySeat
+	 * @param searchByDeparture
+	 * @param earliestFirst
+	 * @param latestFirst
+	 * @param earliestSecond
+	 * @param latestSecond
+	 * @throws Exception
+	 */
 	public TripRequest(Airport departure, Airport arrival, String departureDate, String arrivalDate,
 			String returnDepartureDate, String returnArrivalDate, boolean oneWay, boolean economySeat, boolean searchByDeparture,
 			String earliestFirst, String latestFirst, String earliestSecond, String latestSecond) throws Exception {

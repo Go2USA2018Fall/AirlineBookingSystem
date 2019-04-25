@@ -8,7 +8,9 @@ import java.util.Comparator;
 import trip.Trip;
 
 /**
- * @author user
+ * use to sort trip list by price
+ * 
+ * @author Michiele
  *
  */
 public class PriceComparator implements Comparator<Trip> {

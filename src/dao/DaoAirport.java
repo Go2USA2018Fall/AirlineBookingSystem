@@ -115,6 +115,8 @@ public class DaoAirport {
 	 * 
 	 * @param xmlString XML String containing set of objects
 	 * @return DOM tree from parsed XML or null if exception is caught
+	 * @pre successfully got xml file
+	 * @post parsed xml file to document data type
 	 */
 	static private Document buildDomDoc (String xmlString) {
 		/**

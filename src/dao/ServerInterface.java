@@ -45,6 +45,9 @@ public enum ServerInterface {
 	 * 
 	 * @param teamName identifies the name of the team requesting the collection of airports
 	 * @return collection of Airports from server or null if error.
+	 * @pre user launch app
+	 * @post construct list of all available airport from database. 
+	 * 
 	 */
 	public Airports getAirports () {
 
@@ -98,13 +101,16 @@ public enum ServerInterface {
 	}
 	
 	/**
-	 * Return a collection of all the Flights from server
+	 * search flight leave from a specific airport
 	 * 
-	 * Retrieve the list of flights available to the specified teamName via HTTPGet of the server
-	 * 
-	 * @param teamName identifies the name of the team requesting the collection of flights
-	 * @return collection of Flights from server or null if error.
-	 * @throws Exception 
+	 * @param airport
+	 * @param date
+	 * @param airplaneData
+	 * @param airportData
+	 * @return list of flight
+	 * @throws Exception
+	 * @pre  user provide valid search information and search from departure to arrival
+	 * @post return a list of flight leave from the select airport
 	 */
 	public Flights getFlightsFrom (String airport, String date, Map<String, Airplane> airplaneData, Map<String, Airport> airportData) throws Exception {
 
@@ -157,6 +163,19 @@ public enum ServerInterface {
 		
 	}
 	
+	/**
+	 * search flight arrive at a specific airport
+	 * 
+	 * @param airport
+	 * @param date
+	 * @param airplaneData
+	 * @param airportData
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @pre  user provide valid search information and search from departure to arrival
+	 * @post return a list of flight arrive to the select airport
+	 */
 	public Flights getFlightsTo(String airport, String date, Map<String, Airplane> airplaneData, Map<String, Airport> airportData) throws Exception  {
 
 		URL url;
@@ -214,6 +233,9 @@ public enum ServerInterface {
 	 * 
 	 * @param teamName identifies the name of the team requesting the collection of Airplanes
 	 * @return collection of Airplanes from server or null if error.
+	 * @pre  user launch the application
+	 * @post got a list of airplanes that is available in the database
+	 * 
 	 */
 	public Airplanes getAirplanes () {
 
@@ -273,6 +295,8 @@ public enum ServerInterface {
 	 * 
 	 * @param teamName is the name of team requesting server lock
 	 * @return true if the server was locked successfully, else false
+	 * @pre user confirm book and need to contact back-end server to book the trip
+	 * @post the result of acquire lock, either succesful or not
 	 */
 	public boolean lock () {
 		URL url;
@@ -321,6 +345,7 @@ public enum ServerInterface {
 	 * 
 	 * The server interface to unlock the server interface uses HTTP POST protocol
 	 * 
+	 * @pre user selected flight is reserved in the back-end server and lock is acquired
 	 * @post database unlocked if specified teamName was previously holding lock
 	 * 
 	 * @param teamName is the name of the team holding the lock
@@ -373,6 +398,14 @@ public enum ServerInterface {
 		return true;
 	}
 	
+	/**
+	 * connect to back-end server to reserve the flights user selected 
+	 * 
+	 * @param xmlFlights
+	 * @return boolean whether book flights is successful or not 
+	 * @pre a valid xml for list of flights is been constructed
+	 * @post flights is been successfully reserved or not 
+	 */
 	public boolean bookFlights(String xmlFlights) {
 		URL url;
 		HttpURLConnection connection;
