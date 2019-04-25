@@ -64,11 +64,24 @@ public class Driver {
 		while((!exitFlag)&&!confirmSelection){
 			if (!inputParsed) {
 				// tripRequest = testInput(reader, airports);
-				tripRequest = parseInput(reader, airports);
+				try{
+					tripRequest = parseInput(reader, airports);
+				}catch(Exception e){
+					tripRequest =new TripRequest();
+					tripRequest.setisInvalid(true);
+					inputParsed = false;
+				}
+				
 				while(tripRequest.isInvalid()) {
 					message("Error in input: " + tripRequest.invalidMessage(), true);
 					// tripRequest = testInput(reader, airports);
-					tripRequest = parseInput(reader, airports);
+					try{
+						tripRequest = parseInput(reader, airports);
+					}catch(Exception e){
+						tripRequest =new TripRequest();
+						tripRequest.setisInvalid(true);
+						inputParsed = false;
+					}
 				}
 				inputParsed = true;
 			}
@@ -100,6 +113,11 @@ public class Driver {
 			
 			// If trips are found and user selects one/two
 			if (selectedTrips.size() > 0) {
+				float totalPrice = 0;
+				for(Trip trip: selectedTrips){
+					totalPrice += trip.getPrice();
+				}
+				message("The total price of the trip is "+totalPrice,true);
 				message("Are you sure you want book this trip? (Yes/No)", false);
 				String tripConfirm = reader.readLine();
 				if (tripConfirm.equalsIgnoreCase("yes")) {
@@ -300,7 +318,7 @@ public class Driver {
 				tripRequest.timeFrame(earliestArrivalTimeFirst, latestArrivalTimeFirst, earliestArrivalTimeSecond, latestArrivalTimeSecond);
 			}
 		}
-		message("Please input seat type (Economy-1, First class-2)", false);
+		message("Please input seat type (Coach-1, First class-2)", false);
 		int seatType = Integer.parseInt(reader.readLine());
 		boolean economySeat = (seatType == 1);
 		tripRequest.seatClass(economySeat);

@@ -6,9 +6,11 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 import utils.TimeConverter;
-
-
-
+/**
+ * 
+ * @author Yijie Yan
+ *
+ */
 public class TripRequest {
 
 	private Airport arrival;
@@ -129,52 +131,94 @@ public class TripRequest {
 	
 	public void timeFrame(String earliest, String latest) {
 		
-/*		old code
- * 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
-		this.earliestFirst = LocalTime.parse(earliest, timeParser);
-		this.latestFirst = LocalTime.parse(latest, timeParser);	
-		*/	
-		if(this.searchByDeparture){
-			String elocalDate = this.departureDateString() +" " +earliest;
-			this.earliestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), elocalDate);
-			String llocalDate = this.departureDateString() +" " +latest;
-			this.latestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), llocalDate);
-		}
-		else{
-			String elocalDate = this.arrivalDateString() +" " +earliest;
-			this.earliestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), elocalDate);
-			String llocalDate = this.arrivalDateString() +" " +latest;
-			this.latestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), llocalDate);
+		/*
+		 * old code DateTimeFormatter timeParser =
+		 * DateTimeFormatter.ofPattern("HH:mm"); this.earliestFirst =
+		 * LocalTime.parse(earliest, timeParser); this.latestFirst =
+		 * LocalTime.parse(latest, timeParser);
+		 */
+		try {
+			if (this.searchByDeparture) {
+				String elocalDate = this.departureDateString() + " " + earliest;
+				this.earliestFirst = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						elocalDate);
+				String llocalDate = this.departureDateString() + " " + latest;
+				this.latestFirst = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						llocalDate);
+			} else {
+				String elocalDate = this.arrivalDateString() + " " + earliest;
+				this.earliestFirst = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						elocalDate);
+				String llocalDate = this.arrivalDateString() + " " + latest;
+				this.latestFirst = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						llocalDate);
+			}
+		} catch (Exception e) {
+			this.isInvalid = true;
+			this.invalidMessage = "Error in time fram format, please check time fram format";
+			// e.printStackTrace();
 		}
 		
 	}
 	
 	public void timeFrame(String earliestFirst, String latestFirst, String earliestSecond, String latestSecond) {
-		
-		if(this.searchByDeparture){
-			String eflocalDate = this.departureDateString() +" " +earliestFirst;
-			this.earliestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eflocalDate);
-			String lflocalDate = this.departureDateString() +" " +latestFirst;
-			this.latestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lflocalDate);
-			//String eslocalDate = this.arrivalDateString() +" " +earliestSecond;
-			String eslocalDate = this.returnDepartureDateString() +" " +earliestSecond;
-			this.earliestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eslocalDate);
-			//String lslocalDate = this.arrivalDateString() +" " +latestSecond;
-			String lslocalDate = this.returnDepartureDateString() +" " +latestSecond;
-			this.latestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lslocalDate);
-			
-		}
-		else{
-			String eflocalDate = this.arrivalDateString() +" " +earliestFirst;
-			this.earliestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eflocalDate);
-			String lflocalDate = this.arrivalDateString() +" " +latestFirst;
-			this.latestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lflocalDate);
-			//String eslocalDate = this.departureDateString() +" " +earliestSecond;
-			String eslocalDate = this.returnDepartureDateString() +" " +earliestSecond;
-			this.earliestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eslocalDate);
-			//String lslocalDate = this.departureDateString() +" " +latestSecond;
-			String lslocalDate = this.returnDepartureDateString() +" " +latestSecond;
-			this.latestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lslocalDate);
+		try {
+			if (this.searchByDeparture) {
+				String eflocalDate = this.departureDateString() + " "
+						+ earliestFirst;
+				this.earliestFirst = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						eflocalDate);
+				String lflocalDate = this.departureDateString() + " "
+						+ latestFirst;
+				this.latestFirst = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						lflocalDate);
+				// String eslocalDate = this.arrivalDateString() +" "
+				// +earliestSecond;
+				String eslocalDate = this.returnDepartureDateString() + " "
+						+ earliestSecond;
+				this.earliestSecond = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						eslocalDate);
+				String lslocalDate = this.returnDepartureDateString() + " "
+						+ latestSecond;
+				this.latestSecond = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						lslocalDate);
+
+			} else {
+				String eflocalDate = this.arrivalDateString() + " "
+						+ earliestFirst;
+				this.earliestFirst = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						eflocalDate);
+				String lflocalDate = this.arrivalDateString() + " "
+						+ latestFirst;
+				this.latestFirst = TimeConverter.toUTCTime(
+						this.arrival.latitude(), this.arrival.longitude(),
+						lflocalDate);
+				String eslocalDate = this.returnDepartureDateString() + " "
+						+ earliestSecond;
+				this.earliestSecond = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						eslocalDate);
+				// String lslocalDate = this.departureDateString() +" "
+				// +latestSecond;
+				String lslocalDate = this.returnDepartureDateString() + " "
+						+ latestSecond;
+				this.latestSecond = TimeConverter.toUTCTime(
+						this.departure.latitude(), this.departure.longitude(),
+						lslocalDate);
+			}
+		} catch (Exception e) {
+			this.isInvalid = true;
+			this.invalidMessage = "Error in time fram format, please check time fram format";
+			// e.printStackTrace();
 		}
 		
 /*		old code
@@ -187,6 +231,10 @@ public class TripRequest {
 	
 	public boolean isInvalid() {
 		return this.isInvalid;
+	}
+	
+	public void setisInvalid(boolean isInvalid){
+		this.isInvalid = isInvalid;
 	}
 	
 	public boolean searchByDeparture() {
