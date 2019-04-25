@@ -48,7 +48,6 @@ public class Validator {
 		Flights tripFlights = trip.tripFlights();
 		
 		int size = tripFlights.size();
-		//int duration = tripFlights.get(0).flightDuration();
 		for (int i = 0; i < size-1; i++) {
 			//duration += tripFlights.get(i+1).flightDuration();
 			if (i+1 == size-1)
@@ -70,7 +69,6 @@ public class Validator {
 		}
 		
 		valid = valid && validateTimeFrame(trip, tripRequest, secondLegTrips);
-		//valid = valid && validateFlightDates(tripFlights.get(size-1), tripRequest);
 		return valid;
 	}
 	

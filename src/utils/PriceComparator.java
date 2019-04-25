@@ -17,7 +17,6 @@ public class PriceComparator implements Comparator<Trip> {
 
 	@Override
 	public int compare(Trip one, Trip two) {
-		// TODO Auto-generated method stub
 		float onePrice = one.getPrice();
 		float twoPrice = two.getPrice();
 		

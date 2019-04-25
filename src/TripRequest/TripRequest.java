@@ -73,7 +73,6 @@ public class TripRequest {
 		} catch(Exception e) {
 			this.isInvalid = true;
 			this.invalidMessage = "Error in date format, please check date format";
-			//e.printStackTrace();
 		}		
 		
 		this.departure = departure;
@@ -148,13 +147,6 @@ public class TripRequest {
 	}
 	
 	public void timeFrame(String earliest, String latest) {
-		
-		/*
-		 * old code DateTimeFormatter timeParser =
-		 * DateTimeFormatter.ofPattern("HH:mm"); this.earliestFirst =
-		 * LocalTime.parse(earliest, timeParser); this.latestFirst =
-		 * LocalTime.parse(latest, timeParser);
-		 */
 		try {
 			if (this.searchByDeparture) {
 				String elocalDate = this.departureDateString() + " " + earliest;
@@ -178,7 +170,7 @@ public class TripRequest {
 		} catch (Exception e) {
 			this.isInvalid = true;
 			this.invalidMessage = "Error in time fram format, please check time fram format";
-			// e.printStackTrace();
+			
 		}
 		
 	}
@@ -196,8 +188,6 @@ public class TripRequest {
 				this.latestFirst = TimeConverter.toUTCTime(
 						this.departure.latitude(), this.departure.longitude(),
 						lflocalDate);
-				// String eslocalDate = this.arrivalDateString() +" "
-				// +earliestSecond;
 				String eslocalDate = this.returnDepartureDateString() + " "
 						+ earliestSecond;
 				this.earliestSecond = TimeConverter.toUTCTime(
@@ -225,8 +215,6 @@ public class TripRequest {
 				this.earliestSecond = TimeConverter.toUTCTime(
 						this.departure.latitude(), this.departure.longitude(),
 						eslocalDate);
-				// String lslocalDate = this.departureDateString() +" "
-				// +latestSecond;
 				String lslocalDate = this.returnDepartureDateString() + " "
 						+ latestSecond;
 				this.latestSecond = TimeConverter.toUTCTime(
@@ -236,15 +224,9 @@ public class TripRequest {
 		} catch (Exception e) {
 			this.isInvalid = true;
 			this.invalidMessage = "Error in time fram format, please check time fram format";
-			// e.printStackTrace();
 		}
 		
-/*		old code
- * 		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("HH:mm");
-		this.earliestFirst = LocalTime.parse(earliestFirst, timeParser);
-		this.latestFirst = LocalTime.parse(latestFirst, timeParser);	
-		this.earliestSecond = LocalTime.parse(earliestSecond, timeParser);
-		this.latestSecond = LocalTime.parse(latestSecond, timeParser);*/
+
 	}
 	
 	public boolean isInvalid() {

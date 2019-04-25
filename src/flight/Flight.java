@@ -76,8 +76,6 @@ public class Flight {
 		
 		String printStr;
 		if (debug) {
-//			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+this.departureDate.toLocalDate().toString()
-//					+" : " + departureTime+" ===> "+arrival.code()+" "+this.arrivalDate().toLocalDate().toString() + " : " +arrivalTime;
 			printStr = number+" :: "+departure.code() +" duration"+" :: "+flightDuration +" hrs "+TimeConverter.convertTime(this.departure.latitude(), this.departure.longitude(), this.departureDate) 
 					+" ===> "+arrival.code()+" " + TimeConverter.convertTime(this.arrival.latitude(), this.arrival.longitude(), this.arrivalDate);
 		} else {
