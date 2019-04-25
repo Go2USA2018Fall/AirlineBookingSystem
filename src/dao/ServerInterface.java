@@ -294,8 +294,8 @@ public enum ServerInterface {
 			writer.close();
 			
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to lock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			//System.out.println("\nSending 'POST' to lock database");
+			//System.out.println(("\nResponse Code : " + responseCode));
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -306,7 +306,7 @@ public enum ServerInterface {
 			}
 			in.close();
 			
-			System.out.println(response.toString());
+			//System.out.println(response.toString());
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -346,8 +346,8 @@ public enum ServerInterface {
 			writer.close();
 		    
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to unlock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			//System.out.println("\nSending 'POST' to unlock database");
+			//System.out.println(("\nResponse Code : " + responseCode));
 
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -359,7 +359,7 @@ public enum ServerInterface {
 				}
 				in.close();
 
-				System.out.println(response.toString());
+				//System.out.println(response.toString());
 			}
 		}
 		catch (IOException ex) {
@@ -393,8 +393,8 @@ public enum ServerInterface {
 			writer.close();
 			
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to reserve seats");
-			System.out.println("\nResponse Code : " + responseCode);
+			//System.out.println("\nSending 'POST' to reserve seats");
+			//System.out.println("\nResponse Code : " + responseCode);
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -405,7 +405,7 @@ public enum ServerInterface {
 			}
 			in.close();
 			
-			System.out.println("response is "+response.toString());
+			//System.out.println("response is "+response.toString());
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

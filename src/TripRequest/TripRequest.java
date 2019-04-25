@@ -156,9 +156,11 @@ public class TripRequest {
 			this.earliestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eflocalDate);
 			String lflocalDate = this.departureDateString() +" " +latestFirst;
 			this.latestFirst = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lflocalDate);
-			String eslocalDate = this.arrivalDateString() +" " +earliestSecond;
+			//String eslocalDate = this.arrivalDateString() +" " +earliestSecond;
+			String eslocalDate = this.returnDepartureDateString() +" " +earliestSecond;
 			this.earliestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eslocalDate);
-			String lslocalDate = this.arrivalDateString() +" " +latestSecond;
+			//String lslocalDate = this.arrivalDateString() +" " +latestSecond;
+			String lslocalDate = this.returnDepartureDateString() +" " +latestSecond;
 			this.latestSecond = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lslocalDate);
 			
 		}
@@ -167,9 +169,11 @@ public class TripRequest {
 			this.earliestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), eflocalDate);
 			String lflocalDate = this.arrivalDateString() +" " +latestFirst;
 			this.latestFirst = TimeConverter.toUTCTime(this.arrival.latitude(), this.arrival.longitude(), lflocalDate);
-			String eslocalDate = this.departureDateString() +" " +earliestSecond;
+			//String eslocalDate = this.departureDateString() +" " +earliestSecond;
+			String eslocalDate = this.returnDepartureDateString() +" " +earliestSecond;
 			this.earliestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), eslocalDate);
-			String lslocalDate = this.departureDateString() +" " +latestSecond;
+			//String lslocalDate = this.departureDateString() +" " +latestSecond;
+			String lslocalDate = this.returnDepartureDateString() +" " +latestSecond;
 			this.latestSecond = TimeConverter.toUTCTime(this.departure.latitude(), this.departure.longitude(), lslocalDate);
 		}
 		

@@ -55,19 +55,80 @@ public class Driver {
 		//getting airport information and cache it
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
-		
-//		TripRequest tripRequest = parseInput(reader, airports);
-		TripRequest tripRequest = testInput(reader, airports);
-		while(tripRequest.isInvalid()) {
-			System.out.println("Error in input: " + tripRequest.invalidMessage());
-			tripRequest = parseInput(reader, airports);
-		}
 		boolean confirmSelection = false;
+		boolean inputParsed = false;
+		boolean tryConfirmation = false;
+		TripRequest tripRequest = null;
+		
 		//do the trip confirmation step here.
 		while((!exitFlag)&&!confirmSelection){
+			if (!inputParsed) {
+				// tripRequest = testInput(reader, airports);
+				tripRequest = parseInput(reader, airports);
+				while(tripRequest.isInvalid()) {
+					message("Error in input: " + tripRequest.invalidMessage(), true);
+					// tripRequest = testInput(reader, airports);
+					tripRequest = parseInput(reader, airports);
+				}
+				inputParsed = true;
+			}
 			Trips selectedTrips = searchTrips(reader,tripRequest,airports);
-			confirmSelection = confirmBooking(reader,selectedTrips);
+			// If no first leg trips are found
+			if (selectedTrips.size() == 0 && !exitFlag) {
+				message("No first leg trips found that match the request", true);
+				if (retry(reader)) {
+					inputParsed = false;
+				} else 
+					exitFlag = true;
+			}
+			// If no second leg trips are found
+			if (selectedTrips.size() == 1 && tripRequest.isRoundTrip() && !exitFlag) {
+				message("No second leg trips found that match the request", true);
+				if (retry(reader)) {
+					inputParsed = false;
+				} else 
+					exitFlag = true;
+			}
+			// If user exits before selecting a trip(s)
+			if (selectedTrips.size() == 0 && exitFlag) {
+				if (retry(reader)) {
+					inputParsed = false;
+					exitFlag = false;
+				} else 
+					exitFlag = true;
+			}
+			
+			// If trips are found and user selects one/two
+			if (selectedTrips.size() > 0) {
+				message("Are you sure you want book this trip? (Yes/No)", false);
+				String tripConfirm = reader.readLine();
+				if (tripConfirm.equalsIgnoreCase("yes")) {
+					tryConfirmation = true;
+					confirmSelection = confirmBooking(reader,selectedTrips);
+				} else {
+					if (retry(reader)) {
+						inputParsed = false;
+						exitFlag = false;
+					} else
+						exitFlag = true;
+					
+				}
+			}
+			
+			// If confirmation was tried but failed
+			if (tryConfirmation && !confirmSelection) {
+				message("Trip couldn't be booked successfully. Would you like to try again (Yes/No): ", false);
+				String response = reader.readLine();
+				if (response.equalsIgnoreCase("No")) {
+					if (retry(reader)) {
+						inputParsed = false;
+					} else 
+						exitFlag = true;
+				} 
+			}
 		}
+		
+		message("Thank you for using WPI Airline Booking Software", true);
 
 		
 		
@@ -76,27 +137,36 @@ public class Driver {
 	public static Trips searchTrips(BufferedReader reader,TripRequest tripRequest,Airports airports) throws Exception{
 		Trips selectedTrips = new Trips();
 		TripFinder tripFinder = new TripFinder(tripRequest,airports);
+		message("Searching for trips ...", true);
 		Trips firstLegTrips = tripFinder.findFirstLegTrips();
+		if (firstLegTrips.size() == 0) {
+			return selectedTrips;
+		}
 		Collections.sort(firstLegTrips, new DepartureComparator());
 		firstLegTrips.print();
+		message("Trips found", true);
 		Trips secondLegTrips = null;
 		boolean loopValid = true;
 		boolean firstLeg = true;
 		
 		while(loopValid) {
-			System.out.println("Commands: select <trip index>, sort <price, departure, arrival, duration>, exit");
-			System.out.print("console> ");
+			message("Commands: select <trip index>, sort <price, departure, arrival, duration>, exit", true);
+			message("console> ", false);
 			String input = reader.readLine();
 			if (input.startsWith("select") && firstLeg) {
 				int firstLegIndex = Integer.parseInt(input.split(" ")[1]); 
-				System.out.println("You have selected Trip: "+firstLegTrips.get(firstLegIndex));
+				message("You have selected Trip: "+firstLegTrips.get(firstLegIndex), true);
 				selectedTrips.add(firstLegTrips.get(firstLegIndex));
 				if (tripRequest.isRoundTrip()) {
 					firstLeg = false;
+					message("Searching for second leg trips ...", true);
 					secondLegTrips = tripFinder.findSecondLegTrips();
+					if (secondLegTrips.size() == 0) {
+						return selectedTrips;
+					}
 					Collections.sort(secondLegTrips, new DepartureComparator());
 					secondLegTrips.print();
-					System.out.println("SECOND LEG TRIPS");
+					message("Second leg trips", true);
 				}
 				else if(!tripRequest.isRoundTrip()){
 					loopValid = false;
@@ -127,6 +197,7 @@ public class Driver {
 					toSort.print();
 				}
 			} else if (input.startsWith("exit")) {
+				selectedTrips = new Trips();
 				loopValid = false;
 				exitFlag = true;
 			}
@@ -148,19 +219,19 @@ public class Driver {
 	public static TripRequest parseInput(BufferedReader reader, Airports airports) throws Exception {
 		String departureDate, arrivalDate, returnDepartureDate, returnArrivalDate;
 		TripRequest tripRequest = new TripRequest();
-		System.out.println("Please choose type of trip(One-Way-1, Round-Trip -2):");
+		message("Please choose type of trip(One-Way-1, Round-Trip -2):", false);
 		int tripType = Integer.parseInt(reader.readLine());
 		boolean oneWay = (tripType == 1);
 		tripRequest.roundTrip(oneWay);
-		System.out.print("Search by 1)departure date or 2)arrival date:> ");
+		message("Search by 1)departure date or 2)arrival date:> ", false);
 		int searchBy = Integer.parseInt(reader.readLine());
 		boolean searchByDeparture = (searchBy == 1);
 		tripRequest.searchByDeparture(searchByDeparture);
-		System.out.println("Here are list of Airports you can select from: ");
+		message("Here are list of Airports you can select from: ", true);
 		airports.print();
-		System.out.println("Please select the departure airport: ");
+		message("Please select the departure airport: ", false);
 		int departureAirportIndex = Integer.parseInt(reader.readLine());
-		System.out.println("Please select the arrival airport: ");
+		message("Please select the arrival airport: ", false);
 		int arrivalAirportIndex = Integer.parseInt(reader.readLine());
 		
 		Airport departure = airports.get(departureAirportIndex);
@@ -170,21 +241,21 @@ public class Driver {
 		
 		if (oneWay) {
 			if (searchByDeparture) {
-				System.out.println("Please input the departure date (yyyy_mm_dd);");
+				message("Please input the departure date (yyyy_mm_dd);", false);
 				departureDate = reader.readLine();
-				System.out.println("Please input the earlist time for departure: (HH:mm)");
+				message("Please input the earlist time for departure: (HH:mm)", false);
 				String earliestDepartTime = reader.readLine();
-				System.out.println("Please input the latest time for departure: (HH:mm)");
+				message("Please input the latest time for departure: (HH:mm)", false);
 				String latestDepartTime = reader.readLine();
 				
 				tripRequest.departureDate(departureDate);
 				tripRequest.timeFrame(earliestDepartTime, latestDepartTime);
 			} else {
-				System.out.println("Please input the arrival date(yyyy_mm_dd);");
+				message("Please input the arrival date(yyyy_mm_dd);", false);
 				arrivalDate = reader.readLine();
-				System.out.println("Please input the earlist time for arrival: (HH:mm)");
+				message("Please input the earlist time for arrival: (HH:mm)", false);
 				String earliestArrivalTime = reader.readLine();
-				System.out.println("Please input the latest time for arrival: (HH:mm)");
+				message("Please input the latest time for arrival: (HH:mm)", false);
 				String latestArrivalTime = reader.readLine();
 				
 				tripRequest.arrivalDate(arrivalDate);
@@ -194,34 +265,34 @@ public class Driver {
 			returnArrivalDate = "";
 		} else {
 			if (searchByDeparture) {
-				System.out.println("Please input the departure date of your first leg (yyyy_mm_dd);");
+				message("Please input the departure date of your first leg (yyyy_mm_dd);", false);
 				departureDate = reader.readLine();
-				System.out.println("Please input the earlist time for departure for your first leg: (HH:mm)");
+				message("Please input the earlist time for departure for your first leg: (HH:mm)", false);
 				String earliestDepartTimeFirst = reader.readLine();
-				System.out.println("Please input the latest time for departure for your first leg: (HH:mm)");
+				message("Please input the latest time for departure for your first leg: (HH:mm)", false);
 				String latestDepartTimeFirst = reader.readLine();
-				System.out.println("Please input the departure date of your second leg (yyyy_mm_dd);");
+				message("Please input the departure date of your second leg (yyyy_mm_dd);", false);
 				returnDepartureDate = reader.readLine();
-				System.out.println("Please input the earlist time for departure for your second leg: (HH:mm)");
+				message("Please input the earlist time for departure for your second leg: (HH:mm)", false);
 				String earliestDepartTimeSecond = reader.readLine();
-				System.out.println("Please input the latest time for departure for your second leg: (HH:mm)");
+				message("Please input the latest time for departure for your second leg: (HH:mm)", false);
 				String latestDepartTimeSecond = reader.readLine();
 				
 				tripRequest.departureDate(departureDate);
 				tripRequest.returnDepartureDate(returnDepartureDate);
 				tripRequest.timeFrame(earliestDepartTimeFirst, latestDepartTimeFirst, earliestDepartTimeSecond, latestDepartTimeSecond);
 			} else {
-				System.out.println("Please input the arrival date of your first leg(yyyy_mm_dd);");
+				message("Please input the arrival date of your first leg(yyyy_mm_dd);", false);
 				arrivalDate = reader.readLine();
-				System.out.println("Please input the earlist time for arrival for your first leg: (HH:mm)");
+				message("Please input the earlist time for arrival for your first leg: (HH:mm)", false);
 				String earliestArrivalTimeFirst = reader.readLine();
-				System.out.println("Please input the latest time for arrival for your first leg: (HH:mm)");
+				message("Please input the latest time for arrival for your first leg: (HH:mm)", false);
 				String latestArrivalTimeFirst = reader.readLine();
-				System.out.println("Please input the arrival date of your second leg(yyyy_mm_dd);");
+				message("Please input the arrival date of your second leg(yyyy_mm_dd);", false);
 				returnArrivalDate = reader.readLine();
-				System.out.println("Please input the earlist time for arrival for your second leg: (HH:mm)");
+				message("Please input the earlist time for arrival for your second leg: (HH:mm)", false);
 				String earliestArrivalTimeSecond = reader.readLine();
-				System.out.println("Please input the latest time for arrival for your second leg: (HH:mm)");
+				message("Please input the latest time for arrival for your second leg: (HH:mm)", false);
 				String latestArrivalTimeSecond = reader.readLine();
 				
 				tripRequest.arrivalDate(returnArrivalDate);
@@ -229,7 +300,7 @@ public class Driver {
 				tripRequest.timeFrame(earliestArrivalTimeFirst, latestArrivalTimeFirst, earliestArrivalTimeSecond, latestArrivalTimeSecond);
 			}
 		}
-		System.out.println("Please input seat type (Economy-1, First class-2)");
+		message("Please input seat type (Economy-1, First class-2)", false);
 		int seatType = Integer.parseInt(reader.readLine());
 		boolean economySeat = (seatType == 1);
 		tripRequest.seatClass(economySeat);
@@ -250,47 +321,44 @@ public class Driver {
 	
 	
 	private static boolean confirmBooking(BufferedReader reader, Trips selectedTrips){
-		System.out.println("Are you sure you want book this trip? (Yes/No)");
-		try {
-			String tripConfirm = reader.readLine();
-			if(tripConfirm.equalsIgnoreCase("Yes")){
-				String xml_asString = DaoReservation.buildXML(selectedTrips);
-				boolean lockStatus = ServerInterface.INSTANCE.lock();
-				if(lockStatus){
-					boolean reserveStatus = ServerInterface.INSTANCE.bookFlights(xml_asString);
-					if(reserveStatus){
-						ServerInterface.INSTANCE.unlock();
-						System.out.println("The following trips have been successfully booked:");
-						for(Trip trip: selectedTrips){
-							System.out.println(trip.toString());
-						}
-						System.out.println("Thank you for using WPI Airline booking system!");
-						return true;
-					}
-					else{
-						return false;
-					}
-					
+		String xml_asString = DaoReservation.buildXML(selectedTrips);
+		boolean lockStatus = ServerInterface.INSTANCE.lock();
+		if(lockStatus){
+			boolean reserveStatus = ServerInterface.INSTANCE.bookFlights(xml_asString);
+			if(reserveStatus){
+				ServerInterface.INSTANCE.unlock();
+				message("The following trips have been successfully booked:", true);
+				for(Trip trip: selectedTrips){
+					trip.print();
 				}
-				else{
-					return false;
-				}
-				
-
-			}
-			else if (tripConfirm.equalsIgnoreCase("No")){
-				//need to go back to select trip
-				return false;
+				message("Thank you for using WPI Airline booking system!", true);
+				return true;
 			}
 			else{
 				return false;
 			}
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Please give correct input!" +e.getMessage());
+		}
+		else{
 			return false;
 		}
+	}
+	
+	private static void message(String msg, boolean newline) {
+		if (newline) {
+			System.out.println(msg);
+		} else {
+			System.out.print(msg);
+		}
+	}
+	
+	private static boolean retry(BufferedReader reader) throws Exception {
+		message("1) Retry with new inputs, 2) Exit  : ", false);
+		String response = reader.readLine();
+		if (response.equalsIgnoreCase("1")) {
+			return true;
+		} else 
+			return false;
 	}
 
 }
