@@ -53,18 +53,20 @@ public class Driver {
 	public static void main(String[] args) throws Exception {
 		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in)); 
 		//getting airport information and cache it
+		boolean confirmSelection = false;
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
+		while((!exitFlag)&&!confirmSelection){
 		
-//		TripRequest tripRequest = parseInput(reader, airports);
-		TripRequest tripRequest = testInput(reader, airports);
+		TripRequest tripRequest = parseInput(reader, airports);
+//		TripRequest tripRequest = testInput(reader, airports);
 		while(tripRequest.isInvalid()) {
 			System.out.println("Error in input: " + tripRequest.invalidMessage());
 			tripRequest = parseInput(reader, airports);
 		}
-		boolean confirmSelection = false;
+		
 		//do the trip confirmation step here.
-		while((!exitFlag)&&!confirmSelection){
+		
 			Trips selectedTrips = searchTrips(reader,tripRequest,airports);
 			confirmSelection = confirmBooking(reader,selectedTrips);
 		}
@@ -229,7 +231,7 @@ public class Driver {
 				tripRequest.timeFrame(earliestArrivalTimeFirst, latestArrivalTimeFirst, earliestArrivalTimeSecond, latestArrivalTimeSecond);
 			}
 		}
-		System.out.println("Please input seat type (Economy-1, First class-2)");
+		System.out.println("Please input seat type (Coach-1, First class-2)");
 		int seatType = Integer.parseInt(reader.readLine());
 		boolean economySeat = (seatType == 1);
 		tripRequest.seatClass(economySeat);
@@ -250,6 +252,11 @@ public class Driver {
 	
 	
 	private static boolean confirmBooking(BufferedReader reader, Trips selectedTrips){
+		float totoalPrice = 0;
+		for(Trip trip: selectedTrips){
+			totoalPrice += trip.getPrice();
+		}
+		System.out.println("The total price of your trip is: "+totoalPrice);
 		System.out.println("Are you sure you want book this trip? (Yes/No)");
 		try {
 			String tripConfirm = reader.readLine();
@@ -259,11 +266,13 @@ public class Driver {
 				if(lockStatus){
 					boolean reserveStatus = ServerInterface.INSTANCE.bookFlights(xml_asString);
 					if(reserveStatus){
+						
 						ServerInterface.INSTANCE.unlock();
 						System.out.println("The following trips have been successfully booked:");
 						for(Trip trip: selectedTrips){
 							System.out.println(trip.toString());
 						}
+						System.out.println("The total price of your trip is "+totoalPrice);
 						System.out.println("Thank you for using WPI Airline booking system!");
 						return true;
 					}
@@ -275,8 +284,6 @@ public class Driver {
 				else{
 					return false;
 				}
-				
-
 			}
 			else if (tripConfirm.equalsIgnoreCase("No")){
 				//need to go back to select trip

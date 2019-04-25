@@ -309,7 +309,7 @@ public enum ServerInterface {
 			System.out.println(response.toString());
 		}
 		catch (Exception ex) {
-			ex.printStackTrace();
+			System.out.println("Unable to aquire lock,"+ex.getMessage()+" Please try again!");
 			return false;
 		}
 		return true;
